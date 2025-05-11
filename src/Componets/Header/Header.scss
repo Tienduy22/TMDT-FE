@@ -1,0 +1,53 @@
+.header {
+    width: 100%;
+    height: 60px;
+    border-bottom: 0.5px solid #a09b9b;
+
+    .logo {
+        width: 100px;
+        height: 100%;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        color: #151414;
+    }
+
+    .search-bar {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        font-size: 18px;
+        font-weight: sans-serif;
+
+        a {
+            color: #151414;
+        }
+        .login-register {
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .account-logout{
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+        }
+    }
+}

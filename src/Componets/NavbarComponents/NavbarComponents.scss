@@ -1,0 +1,26 @@
+.navbar{
+    height: 500px;
+    .navbar-material {
+        margin-top: 10px;
+    
+        .material-option {
+            margin-bottom: 10px; 
+        }
+    }
+
+    .navbar-color {
+        margin-top: 10px;
+    
+        .color-option {
+            margin-bottom: 10px; 
+        }
+    }
+
+    .navbar-price-range {
+        margin-top: 10px;
+    
+        .price-range-option {
+            margin-bottom: 10px; 
+        }
+    }
+}
