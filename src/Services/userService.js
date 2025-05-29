@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosJWT = axios.create();
-const API = process.env.REACT_API_BACKEND
+const API = process.env.REACT_APP_API_BACKEND
 
 export const loginUser = async (data) => {
     const res = await axios.post(

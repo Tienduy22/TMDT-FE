@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = process.env.REACT_API_BACKEND
+const API = process.env.REACT_APP_API_BACKEND
 
 export const cartGet = async (userId) => {
     const res = await axios.get(

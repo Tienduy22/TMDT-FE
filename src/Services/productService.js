@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const API = process.env.REACT_API_BACKEND
+const API = process.env.REACT_APP_API_BACKEND
+
+console.log(API)
 
 export const productGet = async (category) => {
     let res = {}
