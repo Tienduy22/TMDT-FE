@@ -1,0 +1,131 @@
+.cart-container {
+  margin: 50px;
+}
+
+.cart-item {
+  .product-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    .ant-card-body {
+      padding: 16px;
+    }
+    .amount {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1px; // Khoảng cách giữa các phần tử
+
+      .decrease-amount,
+      .increase-amount {
+        background-color: #fbf8f8;
+        border: 1px solid #ccc;
+        font-size: 20px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #ffffff;
+        }
+      }
+
+      .amount-input {
+        width: 35px;
+        height: 25px;
+        text-align: center;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+        -moz-appearance: textfield;
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .product-image {
+    .img-product {
+      width: 100px;
+      height: 100px;
+      border-radius: 8px;
+    }
+  }
+
+  .delete {
+    width: 20px;
+    height: 33.53px;
+    background-color: #4d4c4c;
+    color: #fbf8f8;
+    text-align: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+
+  .product-details {
+    .product-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .product-price {
+      font-size: 16px;
+      color: #e91e63;
+    }
+  }
+}
+
+.cart-summary {
+  .summary-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+
+    .cart-summary-item {
+      margin-bottom: 12px;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .checkout-button {
+      background-color: #1e88e5;
+      border-color: #1e88e5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 20px;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .discount-input {
+      margin-top: 10px;
+    }
+  }
+}
+
+.continue-shopping-button {
+  font-size: 14px;
+  color: #1e88e5;
+  margin-top: 20px;
+  padding: 0;
+}
+
+.quantity-input {
+  width: 100%;
+}
+
+.ant-input-number {
+  width: 100%;
+  border-radius: 8px;
+}

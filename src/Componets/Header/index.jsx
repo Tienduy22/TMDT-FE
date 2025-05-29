@@ -6,7 +6,9 @@ import { Input } from "antd";
 import { Avatar } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import { UserOutlined } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as UserService from "../../Services/userService"
+import { remoteUser } from "../../Redux/reducers/userReducer";
 
 
 const { Search } = Input;
@@ -20,6 +22,8 @@ function Header() {
 
   const user = useSelector((state) => state.user)
 
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const handleNavigateLogin = () => {
@@ -28,6 +32,20 @@ function Header() {
 
   const handleNavigateRegister = () => {
     navigate("/register")
+  }
+
+  const handleLogout = async () => {
+    await UserService.LogoutUser()
+    localStorage.clear('token')
+    dispatch(remoteUser())
+  }
+
+  const handleProfile = () => {
+    navigate("/profile")
+  }
+
+  const handleNavigateCart = () => {
+    navigate("/cart")
   }
   
   return (
@@ -50,9 +68,9 @@ function Header() {
           <Avatar size="large" icon={<UserOutlined />} />
           {user?.fullName ? (
             <div className="account-logout">
-              <div>{user?.fullName}</div>
+              <div onClick={handleProfile}>{user?.fullName}</div>
               <span>|</span>
-              <div>Logout</div>
+              <div onClick={handleLogout}>Logout</div>
             </div>
           ) : (
             <div className="login-register">
@@ -63,7 +81,7 @@ function Header() {
           )}
 
           <div className="cart-icon">
-            <ShoppingCartOutlined style={{ fontSize: "26px" }} />
+            <ShoppingCartOutlined style={{ fontSize: "26px" }} onClick={handleNavigateCart}/>
           </div>
         </Col>
       </Row>

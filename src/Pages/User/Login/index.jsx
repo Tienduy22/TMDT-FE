@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode'; 
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../../Redux/reducers/userReducer";
-import Cookies from 'js-cookie';
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -21,6 +20,11 @@ function Login() {
         if(data?.code === 200){
             navigate("/");
             localStorage.setItem("token", JSON.stringify(data?.token))
+            const tokenFromHeader = data?.headers?.authorization;  // Ví dụ lấy token từ header
+
+            if (tokenFromHeader) {
+                console.log("Token from header:", tokenFromHeader);  // In ra token từ header (nếu có)
+            }
         }
         if(data?.token){
             const decode = jwtDecode(data?.token);
@@ -28,12 +32,9 @@ function Login() {
             if(decode?.id){
                 handleGetDetailUser(decode?.id, data?.token)
             }
-            console.log(decode)
 
-            const token1 = Cookies.get('token');
-            console.log(token1)
         }
-    },[isSuccess, isError, navigate, data])
+    },[isSuccess, isError,navigate, data])
 
     const handleGetDetailUser = async (id,token) => {
         const res = await UserService.ProfileUser(id,token)

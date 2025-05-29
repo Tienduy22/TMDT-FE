@@ -5,10 +5,22 @@ import { SafetyOutlined,TruckOutlined,SolutionOutlined,InboxOutlined } from '@an
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductDetail.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { addOrder } from '../../Redux/reducers/orderReducer';
+import { InputNumber } from 'antd';
+import { jwtDecode } from "jwt-decode";
+import * as cartService from "@/Services/cartService"
 
 function ProductDetail() {
     const { id } = useParams(); 
     const [product, setProduct] = useState(null);
+    const [amount, setAmount] = useState(1)
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
+    let user_id
+    if(user.token){
+        user_id = jwtDecode(user.token).id;
+    }
 
     useEffect(() => {
         fetch(`http://localhost:3000/api/v1/admin/products/detail/${id}`)
@@ -24,6 +36,32 @@ function ProductDetail() {
     if (!product) {
         return <h1>Loading...</h1>;
     }
+
+
+    const handleClickCart = () => {
+        const orderItem = {
+                name: product?.title,
+                amount: amount,
+                image: product?.thumbnail,
+                price: product?.price,
+                product_id: product?._id,
+            }
+        if(!user_id){
+            dispatch(addOrder({
+                orderItem
+            }))
+        } else {
+            const addCart = async () => {
+                const res = cartService.cartUpdate(user_id,orderItem)
+            }
+            addCart()
+        }
+    }
+
+
+    const onChangeNumber = (value) => {
+        setAmount(parseInt(value))
+    };
 
     const color = product.color.split(",")
 
@@ -56,11 +94,12 @@ function ProductDetail() {
                                     </div>
                                 ))}
                             </div>
+                            <InputNumber className='amount' min={1} max={10} defaultValue={1} onChange={onChangeNumber} />
                             <Flex wrap gap="small">
                                 <Button className='btn-buy'>
                                     Mua ngay
                                 </Button>
-                                <Button className='add-cart'>
+                                <Button className='add-cart' onClick={handleClickCart}>
                                     Thêm vào giỏ hàng
                                 </Button>
                             </Flex>

@@ -1,54 +1,52 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Row } from "antd";
-import NavbarComponents from "@/Componets/NavbarComponents";
-import CardProduct from "@/Componets/CardProduct";
-import * as ProductService from "@/Services/productService";
-import "./Product.scss";
-import ProductFilter from "@/Componets/ProductFilters/ProductFilter";
-import PaginationComponents from "@/Componets/Pagination";
+import NavbarComponents from "../../Componets/NavbarComponents";
+import CardProduct from "../../Componets/CardProduct";
+import * as ProductService from "../../Services/productService";
+import "./ProductCategory.scss";
+import { useMutationHook } from "../../Hooks/useMutationHook";
+import { useDispatch, useSelector } from "react-redux";
 
-
-
-
-function Product() {
-    const [product, setProduct] = useState([]);
+function ProductCategory() {
+    const [category, setCategory] = useState([]);
     const navigate = useNavigate();
-    const [filters, setFilters] = useState({
+    const dispatch = useDispatch();
+    let product = useSelector((state) => state.product)
 
-    });
+    product=product.data
+
+    const mutation = useMutationHook((category) => ProductService.productGet(category));
 
     useEffect( () => {
-        const fetchProduct = async () => {
+        const fetchCategory = async () => {
             try {
-                const res = await ProductService.productGet(filters.CategoryId); 
-                setProduct(res.products);  
+                const res = await ProductService.productCategoryGet();
+                setCategory(res)
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
-        };
-        fetchProduct();
-    },[filters])
+        }
+        fetchCategory();
+    },[])
+
+
+
+    const handleProductCategory = (productCategory) => {
+        mutation.mutate(productCategory)
+    }
 
     const handleProductClick = (item) => {
         navigate(`/products/detail/${item._id}`);
     };
-
-    const handleFilterChange = (newFilters) =>{
-        setFilters((...preFilters) =>({
-            ...preFilters,
-            ...newFilters,   
-        }))
-    }
-
-    const handleChange = (e) => {
-        console.log(e)
-    }
-
     return (
         <div className="container-product">
             <Row className="product-list-title">
-                <ProductFilter filters={filters} onChange={handleFilterChange} />
+                {category.map((item, index) => (
+                    <Col span={24 / category.length} key={index}>
+                        <div className="product-title" onClick={() =>handleProductCategory(item._id)}>{item.title}</div>
+                    </Col>
+                ))}
             </Row>
             <Row className="product-main">
                 <Col span={4} className="navbar">
@@ -72,11 +70,10 @@ function Product() {
                             </Col>
                         ))}
                     </Row>
-                    <PaginationComponents onChange={handleChange}/>
                 </Col>
             </Row>
         </div>
     );
 }
 
-export default Product;
+export default ProductCategory;
