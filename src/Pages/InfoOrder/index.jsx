@@ -4,10 +4,12 @@ import { Row, Col, Button, Input, Radio } from "antd";
 import { useState } from "react";
 import { PayPalButton } from "react-paypal-button-v2";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode'; 
 const { TextArea } = Input;
 
 const InfoOrder = () => {
     const order = useSelector((state) => state.order);
+    const user = useSelector((state) => state.user)
     const navigate = useNavigate();
     const [name,setName] = useState();
     const [address,setAddress] = useState();
@@ -15,6 +17,10 @@ const InfoOrder = () => {
     const [email,setEmail] = useState();
     const [note,setNote] = useState();
     const [payment, setPayment] = useState();
+
+    const decode = jwtDecode(user.token)
+
+    const userId = decode.id
 
     const totalPrice = order?.orderItems?.reduce((total, item) => {
         return total + item.price * item.amount;
@@ -143,6 +149,7 @@ const InfoOrder = () => {
                                     },
                                     body: JSON.stringify({
                                         orderID: data.orderID,
+                                        userId: userId,
                                         infoUser : {
                                             name,
                                             address,
