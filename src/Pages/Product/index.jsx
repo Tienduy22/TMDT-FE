@@ -8,42 +8,37 @@ import "./Product.scss";
 import ProductFilter from "@/Componets/ProductFilters/ProductFilter";
 import PaginationComponents from "@/Componets/Pagination";
 
-
-
-
 function Product() {
     const [product, setProduct] = useState([]);
     const navigate = useNavigate();
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState({});
 
-    });
-
-    useEffect( () => {
+    useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await ProductService.productGet(filters.CategoryId); 
-                setProduct(res.products);  
+                const res = await ProductService.productGet(filters.CategoryId);
+                setProduct(res.products);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchProduct();
-    },[filters])
+    }, [filters]);
 
     const handleProductClick = (item) => {
         navigate(`/products/detail/${item._id}`);
     };
 
-    const handleFilterChange = (newFilters) =>{
-        setFilters((...preFilters) =>({
-            ...preFilters,
-            ...newFilters,   
-        }))
-    }
+    const handleFilterChange = (newFilters) => {
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            ...newFilters,
+        }));
+    };
 
     const handleChange = (e) => {
-        console.log(e)
-    }
+        console.log(e);
+    };
 
     return (
         <div className="container-product">
@@ -51,28 +46,34 @@ function Product() {
                 <ProductFilter filters={filters} onChange={handleFilterChange} />
             </Row>
             <Row className="product-main">
-                <Col span={4} className="navbar">
+                <Col xs={24} sm={24} md={5} lg={4} xl={4} className="navbar">
                     <NavbarComponents />
                 </Col>
-                <Col span={20}>
-                    <Row gutter={[16, 16]}>
+                <Col xs={24} sm={24} md={19} lg={20} xl={20} style={{paddingLeft:30}}>
+                    <Row gutter={[90, 90]}>
                         {product.map((item, index) => (
                             <Col
-                                span={7}
+                                xs={24}
+                                sm={12}
+                                md={8}
+                                lg={8}
+                                xl={8}
                                 key={index}
                                 className="product-item"
-                                style={{ marginLeft: "50px" }}
                                 onClick={() => handleProductClick(item)}
                             >
                                 <CardProduct
                                     img={item.thumbnail}
                                     title={item.title}
                                     price={item.price}
+                                    discount={item.discount}
                                 />
                             </Col>
                         ))}
                     </Row>
-                    <PaginationComponents onChange={handleChange}/>
+                    <div className="pagination-container">
+                        <PaginationComponents onChange={handleChange} />
+                    </div>
                 </Col>
             </Row>
         </div>
