@@ -180,13 +180,13 @@ const Cart = () => {
                             <Col span={14} className="product-image" style={{ paddingLeft: 60 }}>
                                 <h2>Sản phẩm</h2>
                             </Col>
-                            <Col span={3} className="product-image">
+                            <Col span={3} className="product-image" style={{ textAlign: 'start', paddingLeft: 15 }}>
                                 <h2>Giá</h2>
                             </Col>
-                            <Col span={4} className="product-image">
+                            <Col span={4} className="product-image" style={{ textAlign: 'start' }}>
                                 <h2>Số lượng</h2>
                             </Col>
-                            <Col span={3} className="product-image">
+                            <Col span={3} className="product-image" style={{ textAlign: 'start'}} >
                                 <h2>Tạm tính</h2>
                             </Col>
                         </Row>
@@ -249,7 +249,8 @@ const Cart = () => {
                                         <div style={{ 
                                             display: 'flex', 
                                             alignItems: 'center', 
-                                            gap: '12px'
+                                            gap: '12px',
+                                            paddingLeft: 5
                                         }}>
                                             <div className="quantity-control-group" style={{
                                                 display: 'flex',
@@ -318,7 +319,7 @@ const Cart = () => {
                                         </div>
                                     </Col>
                                     <Col span={3}>
-                                        <div style={{ fontSize: '18px', color: '#ff4d4f', fontWeight: '600' }}>
+                                        <div style={{ fontSize: '18px', color: '#ff4d4f', fontWeight: '600', paddingLeft: 10 }}>
                                             {((item.price || 0) * (item.amount || 1)).toLocaleString()}đ
                                         </div>
                                     </Col>
@@ -332,7 +333,7 @@ const Cart = () => {
                     <Card title="Tổng Cộng Giỏ Hàng" className="summary-card">
                         <Row className="cart-summary-item">
                             <Col span={12}>
-                                <strong>Tổng tiền hàng:</strong>
+                                <strong style={{ fontSize: '14px' }}>Tổng tiền hàng:</strong>
                             </Col>
                             <Col span={12} className="text-right">
                                 {totalPrice.toLocaleString()} VNĐ
@@ -342,16 +343,16 @@ const Cart = () => {
                             <Col span={12}>
                                 <strong>Phí vận chuyển:</strong>
                             </Col>
-                            <Col span={12} className="text-right">
+                            <Col span={12} className="text-right" style={{ fontSize: '15px' }}>
                                 Miễn phí
                             </Col>
                         </Row>
                         <Row className="cart-summary-item" style={{ borderTop: '2px solid #f0f0f0', marginTop: '16px', paddingTop: '16px' }}>
                             <Col span={12}>
-                                <strong style={{ fontSize: '18px' }}>Tổng thanh toán:</strong>
+                                <strong style={{ fontSize: '14px' }}>Tổng thanh toán:</strong>
                             </Col>
                             <Col span={12} className="text-right">
-                                <span style={{ fontSize: '20px', color: '#ff4d4f' }}>{totalPrice.toLocaleString()} VNĐ</span>
+                                <span style={{ fontSize: '15px', color: '#ff4d4f' }}>{totalPrice.toLocaleString()} VNĐ</span>
                             </Col>
                         </Row>
                         <Input
