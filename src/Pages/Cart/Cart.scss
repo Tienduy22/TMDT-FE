@@ -1,14 +1,30 @@
 .cart-container {
   margin: 50px;
+  max-width: 1200px;
+  margin: 50px auto;
 }
 
 .cart-item {
   .product-card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    .ant-card-body {
-      padding: 16px;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     }
+
+    .ant-card-body {
+      padding: 24px;
+    }
+
+    h2 {
+      color: #333;
+      font-size: 20px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
     .amount {
       display: flex;
       align-items: center;
@@ -55,7 +71,13 @@
     .img-product {
       width: 100px;
       height: 100px;
-      border-radius: 8px;
+      border-radius: 12px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
 
@@ -72,60 +94,208 @@
   .product-details {
     .product-title {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 600;
       color: #333;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+      
+      &:hover {
+        color: #1890ff;
+      }
     }
 
     .product-price {
-      font-size: 16px;
-      color: #e91e63;
+      font-size: 18px;
+      color: #ff4d4f;
+      font-weight: 600;
     }
   }
 }
 
 .cart-summary {
   .summary-card {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    background: #fff;
+    position: sticky;
+    top: 20px;
+
+    .ant-card-head {
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 16px;
+      
+      .ant-card-head-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #333;
+      }
+    }
 
     .cart-summary-item {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      &:last-child {
+        border-bottom: none;
+      }
     }
 
     .text-right {
       text-align: right;
+      font-weight: 600;
+      color: #ff4d4f;
+      font-size: 18px;
     }
 
     .checkout-button {
-      background-color: #1e88e5;
-      border-color: #1e88e5;
+      background: linear-gradient(45deg, #1890ff, #096dd9);
+      border: none;
       color: white;
       font-size: 16px;
-      font-weight: bold;
-      margin-top: 20px;
-      border-radius: 8px;
-      padding: 12px;
+      font-weight: 600;
+      margin-top: 24px;
+      border-radius: 12px;
+      padding: 14px;
+      height: auto;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+      }
     }
 
     .discount-input {
-      margin-top: 10px;
+      margin-top: 16px;
+      
+      .ant-input {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #d9d9d9;
+        
+        &:focus {
+          border-color: #1890ff;
+          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+      }
+      
+      .ant-btn {
+        border-radius: 0 8px 8px 0;
+        background: #1890ff;
+        color: white;
+        
+        &:hover {
+          background: #096dd9;
+        }
+      }
     }
   }
 }
 
 .continue-shopping-button {
-  font-size: 14px;
-  color: #1e88e5;
-  margin-top: 20px;
+  font-size: 16px;
+  color: #1890ff;
+  margin-top: 24px;
   padding: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    color: #096dd9;
+    transform: translateX(-4px);
+  }
 }
 
 .quantity-input {
   width: 100%;
+  
+  .ant-input-number {
+    width: 100%;
+    border-radius: 8px;
+    
+    &:hover, &:focus {
+      border-color: #1890ff;
+    }
+  }
 }
 
-.ant-input-number {
-  width: 100%;
-  border-radius: 8px;
+// Custom styles for quantity controls
+.ant-input-number-group {
+  .ant-input-number-group-addon {
+    background: #f5f5f5;
+    border: 1px solid #d9d9d9;
+    color: #666;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: #e6f7ff;
+      color: #1890ff;
+    }
+  }
+}
+
+// Delete button styles
+.ant-btn-dangerous {
+  &:hover {
+    background: #ff4d4f;
+    color: white;
+  }
+}
+
+.quantity-control-group {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #fff;
+
+  .ant-btn-text {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: none;
+    background-color: #fafafa;
+    color: #666;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #f0f0f0;
+    }
+
+    &:disabled {
+      color: #d9d9d9;
+      background-color: #fafafa;
+      cursor: not-allowed;
+    }
+  }
+
+  .ant-input-number {
+    width: 40px;
+    text-align: center;
+    border: none;
+    border-radius: 0;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 4px;
+
+    .ant-input-number-input {
+      text-align: center;
+      padding: 0;
+    }
+  }
+
+  .decrease-btn {
+    border-right: 1px solid #d9d9d9;
+  }
+
+  .increase-btn {
+    border-left: 1px solid #d9d9d9;
+  }
 }

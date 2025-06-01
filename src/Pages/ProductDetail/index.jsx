@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd';
 import { Button } from 'antd';
 import { Flex } from 'antd';
-import { SafetyOutlined,TruckOutlined,SolutionOutlined,InboxOutlined } from '@ant-design/icons';
+import { SafetyOutlined, TruckOutlined, SolutionOutlined, InboxOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductDetail.scss';
@@ -13,14 +13,14 @@ import * as cartService from "@/Services/cartService"
 import { message } from 'antd';
 
 function ProductDetail() {
-    const { id } = useParams(); 
+    const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [amount, setAmount] = useState(1)
     const [rating, setRating] = useState(0)
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     let user_id
-    if(user.token){
+    if (user.token) {
         user_id = jwtDecode(user.token).id;
     }
 
@@ -40,6 +40,7 @@ function ProductDetail() {
     }
 
 
+
     const handleClickCart = () => {
         if (!product || !product._id || !product.title || !product.thumbnail || !product.price) {
             message.error('Thông tin sản phẩm không hợp lệ');
@@ -55,7 +56,7 @@ function ProductDetail() {
             id: product._id
         }
 
-        if(!user_id){
+        if (!user_id) {
             dispatch(addOrder({
                 orderItem
             }));
@@ -88,7 +89,7 @@ function ProductDetail() {
                 <Col span={20} className='product-detail'>
                     <Row gutter={[30, 30]}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12} className='product-image'>
-                            <img src={product.thumbnail} alt={product.title}/>
+                            <img src={product.thumbnail} alt={product.title} />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={12} xl={12} className='product-info'>
                             <h2 className='title'>{product.title}</h2>
@@ -96,10 +97,10 @@ function ProductDetail() {
                             <p className='price'>{product.price?.toLocaleString()} đ</p>
                             <div className='color-option'> Màu sắc:
                                 {color.map((item, index) => (
-                                    <div key={index}>                      
+                                    <div key={index}>
                                         {item.trim() === "Xanh dương" ? (
                                             <div className='color' style={{ backgroundColor: "#0396FF" }}></div>
-                                        ) : ""} 
+                                        ) : ""}
                                         {item.trim() === "Trắng" ? (
                                             <div className='color' style={{ backgroundColor: "white" }}></div>
                                         ) : ""}
@@ -110,31 +111,74 @@ function ProductDetail() {
                                     </div>
                                 ))}
                             </div>
-                            <InputNumber className='amount' min={1} max={10} defaultValue={1} onChange={onChangeNumber} />
-                            <Flex wrap gap="small" style={{paddingTop: 20}}>
-                                <Button className='btn-buy'>
+                            <div className="amount-control" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8 }}>
+                                <div style={{ fontSize: 22, fontWeight: 500 }}>Số lượng</div>
+                                <InputNumber
+                                    size='large'
+                                    className="amount"
+                                    min={1}
+                                    max={100}
+                                    defaultValue={1}
+                                    onChange={onChangeNumber}
+                                    style={{ width: 60 }}
+                                />
+                            </div>
+
+
+                            <Flex wrap gap="small" style={{ paddingTop: 20 }}>
+                                <Button
+                                    style={{
+                                        backgroundColor: '#e63946',
+                                        color: 'white',
+                                        padding: '10px 20px',
+                                        fontSize: 16,
+                                        fontWeight: 'bold',
+                                        borderRadius: 8,
+                                        border: 'none',
+                                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                        transition: 'all 0.3s',
+                                    }}
+                                    onMouseEnter={e => (e.target.style.backgroundColor = '#d62828')}
+                                    // onClick={handleClickBuy}
+                                >
                                     Mua ngay
                                 </Button>
-                                <Button className='add-cart' onClick={handleClickCart}>
+
+                                <Button
+                                    style={{
+                                        backgroundColor: '#457b9d',
+                                        color: 'white',
+                                        padding: '10px 20px',
+                                        fontSize: 16,
+                                        fontWeight: 'bold',
+                                        borderRadius: 8,
+                                        border: 'none',
+                                        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                                        transition: 'all 0.3s',
+                                    }}
+                                    onMouseEnter={e => (e.target.style.backgroundColor = '#1d3557')}
+                                    onClick={handleClickCart}
+                                >
                                     Thêm vào giỏ hàng
                                 </Button>
                             </Flex>
 
-                            <div className="product-service" style={{paddingTop: 20, paddingBottom: 20}}>
-                                <Row gutter={[15,15]}>
-                                    <Col span={12} style={{paddingTop: 20, paddingBottom: 20}}>
-                                        <SafetyOutlined className='service' style={{fontSize: 30}}/>Bảo hành 12 tháng tận nơi                             
+
+                            <div className="product-service" style={{ paddingTop: 20, paddingBottom: 20 }}>
+                                <Row gutter={[15, 15]}>
+                                    <Col span={12} style={{ paddingTop: 20, paddingBottom: 20 }}>
+                                        <SafetyOutlined className='service' style={{ fontSize: 30 }} />Bảo hành 12 tháng tận nơi
                                     </Col>
-                                    <Col span={12} style={{paddingTop: 20, paddingBottom: 20}}>
-                                        <TruckOutlined className='service' style={{fontSize: 30}}/> Free Ship toàn quốc từ 498k
+                                    <Col span={12} style={{ paddingTop: 20, paddingBottom: 20 }}>
+                                        <TruckOutlined className='service' style={{ fontSize: 30 }} /> Free Ship toàn quốc từ 498k
                                     </Col>
                                 </Row>
-                                <Row gutter={[15,15]}>
+                                <Row gutter={[15, 15]}>
                                     <Col span={12}>
-                                        <SolutionOutlined className='service' style={{fontSize: 30}}/> Hoàn trả nếu không hài lòng
+                                        <SolutionOutlined className='service' style={{ fontSize: 30 }} /> Hoàn trả nếu không hài lòng
                                     </Col>
                                     <Col span={12}>
-                                        <InboxOutlined className='service' style={{fontSize: 30}}/> Kiểm tra trước khi thanh toán
+                                        <InboxOutlined className='service' style={{ fontSize: 30 }} /> Kiểm tra trước khi thanh toán
                                     </Col>
                                 </Row>
                             </div>
@@ -154,10 +198,10 @@ function ProductDetail() {
                     <Row gutter={[0, 20]}>
                         <Col span={24} >
                             <div className="review-rating" >
-                                <span style={{paddingLeft:10}}>Đánh giá của bạn:</span>
-                                <Rate 
-                                    allowHalf 
-                                    value={rating} 
+                                <span style={{ paddingLeft: 10 }}>Đánh giá của bạn:</span>
+                                <Rate
+                                    allowHalf
+                                    value={rating}
                                     onChange={setRating}
                                     className="rating-stars"
                                 />

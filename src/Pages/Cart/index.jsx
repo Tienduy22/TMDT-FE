@@ -173,11 +173,11 @@ const Cart = () => {
 
     return (
         <div className="cart-container">
-            <Row gutter={[16, 16]}>
+            <Row gutter={[24, 24]}>
                 <Col span={16} className="cart-item">
                     <Card hoverable className="product-card">
                         <Row>
-                            <Col span={14} className="product-image" style={{ paddingLeft: 40 }}>
+                            <Col span={14} className="product-image" style={{ paddingLeft: 60 }}>
                                 <h2>Sản phẩm</h2>
                             </Col>
                             <Col span={3} className="product-image">
@@ -190,113 +190,141 @@ const Cart = () => {
                                 <h2>Tạm tính</h2>
                             </Col>
                         </Row>
-                        {order.map((item) => (
-                            <Row align="middle" key={item._id || item.id} style={{ marginBottom: '20px' }}>
-                                <Col span={14}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <img
-                                            src={item.image || ''}
-                                            alt={item.name || 'Product'}
-                                            className="img-product"
-                                            style={{ width: '80px', height: '80px', objectFit: 'cover' }}
-                                        />
-                                        <div>
-                                            <h3 className="product-title" style={{ margin: 0 }}>{item.name || 'Sản phẩm không xác định'}</h3>
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col span={3}>
-                                    <div style={{ fontSize: '16px', color: '#666' }}>
-                                        {(item.price || 0).toLocaleString()}đ
-                                    </div>
-                                </Col>
-                                <Col span={4}>
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        gap: '10px'
-                                    }}>
-                                        <div style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            border: '1px solid #d9d9d9',
-                                            borderRadius: '4px',
-                                            overflow: 'hidden'
-                                        }}>
-                                            <Button
-                                                type="text"
-                                                size="small"
-                                                onClick={() => handleDecreaseAmount(item.product_id || item.id)}
-                                                disabled={item.amount <= 1}
+                        {order.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                                <img 
+                                    src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" 
+                                    alt="Empty Cart" 
+                                    style={{ width: '120px', marginBottom: '20px' }}
+                                />
+                                <h3 style={{ color: '#666', marginBottom: '16px' }}>Giỏ hàng của bạn đang trống</h3>
+                                <Button 
+                                    type="primary" 
+                                    size="large"
+                                    onClick={handleNavigateProduct}
+                                    style={{ 
+                                        background: 'linear-gradient(45deg, #1890ff, #096dd9)',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        padding: '0 24px'
+                                    }}
+                                >
+                                    Tiếp tục mua sắm
+                                </Button>
+                            </div>
+                        ) : (
+                            order.map((item) => (
+                                <Row align="middle" key={item._id || item.id} style={{ marginBottom: '24px', padding: '16px', borderRadius: '12px', backgroundColor: '#fafafa' }}>
+                                    <Col span={14}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                            <Button 
+                                                type="text" 
+                                                icon={<CloseOutlined style={{ color: '#999' }} />}
+                                                onClick={() => handleDeleteProduct(item.product_id || item.id)}
                                                 style={{
-                                                    width: '30px',
-                                                    height: '30px',
                                                     padding: 0,
-                                                    border: 'none',
-                                                    borderRight: '1px solid #d9d9d9',
-                                                    borderRadius: 0,
-                                                    backgroundColor: '#fafafa',
-                                                    color: item.amount <= 1 ? '#d9d9d9' : '#666'
-                                                }}
-                                            >
-                                                -
-                                            </Button>
-                                            <InputNumber
-                                                min={1}
-                                                value={item.amount}
-                                                onChange={(value) => handleQuantityChange(value, item)}
-                                                style={{ 
-                                                    width: '60px',
-                                                    textAlign: "center",
-                                                    border: 'none',
-                                                    borderRadius: 0
-                                                }}
-                                                controls={false}
-                                                onBlur={(e) => {
-                                                    const value = parseInt(e.target.value);
-                                                    if (!value || value < 1) {
-                                                        handleQuantityChange(1, item);
-                                                    }
+                                                    height: 'auto',
+                                                    marginLeft: '-10px',
+                                                    marginRight: '10px',
+                                                    color: '#999'
                                                 }}
                                             />
-                                            <Button
-                                                type="text"
-                                                size="small"
-                                                onClick={() => handleIncreaseAmount(item.product_id || item.id)}
-                                                style={{
-                                                    width: '30px',
-                                                    height: '30px',
-                                                    padding: 0,
-                                                    border: 'none',
-                                                    borderLeft: '1px solid #d9d9d9',
-                                                    borderRadius: 0,
-                                                    backgroundColor: '#fafafa',
-                                                    color: '#666'
-                                                }}
-                                            >
-                                                +
-                                            </Button>
+                                            <img
+                                                src={item.image || ''}
+                                                alt={item.name || 'Product'}
+                                                className="img-product"
+                                                style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                                            />
+                                            <div>
+                                                <h3 className="product-title" style={{ marginRight: 10 }}>{item.name || 'Sản phẩm không xác định'}</h3>
+                                            </div>
                                         </div>
-                                        <Button 
-                                            type="text" 
-                                            danger
-                                            icon={<DeleteOutlined />}
-                                            onClick={() => handleDeleteProduct(item.product_id || item.id)}
-                                            style={{ 
-                                                padding: '4px 8px'
-                                            }}
-                                        >
-                                            Xóa
-                                        </Button>
-                                    </div>
-                                </Col>
-                                <Col span={3}>
-                                    <div style={{ fontSize: '16px', color: '#1890ff', fontWeight: '500' }}>
-                                        {((item.price || 0) * (item.amount || 1)).toLocaleString()}đ
-                                    </div>
-                                </Col>
-                            </Row>
-                        ))}
+                                    </Col>
+                                    <Col span={3}>
+                                        <div style={{ fontSize: '16px', color: '#666', fontWeight: '500' }}>
+                                            {(item.price || 0).toLocaleString()}đ
+                                        </div>
+                                    </Col>
+                                    <Col span={4}>
+                                        <div style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            gap: '12px'
+                                        }}>
+                                            <div className="quantity-control-group" style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                border: '1px solid #d9d9d9',
+                                                borderRadius: '8px',
+                                                overflow: 'hidden',
+                                                backgroundColor: '#fff'
+                                            }}>
+                                                <Button
+                                                    type="text"
+                                                    size="small"
+                                                    onClick={() => handleDecreaseAmount(item.product_id || item.id)}
+                                                    disabled={item.amount <= 1}
+                                                    className="decrease-btn"
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '32px',
+                                                        padding: 0,
+                                                        border: 'none',
+                                                        borderRight: '1px solid #d9d9d9',
+                                                        borderRadius: 0,
+                                                        backgroundColor: '#fafafa',
+                                                        color: item.amount <= 1 ? '#d9d9d9' : '#666'
+                                                    }}
+                                                >
+                                                    -
+                                                </Button>
+                                                <InputNumber
+                                                    min={1}
+                                                    value={item.amount}
+                                                    onChange={(value) => handleQuantityChange(value, item)}
+                                                    style={{ 
+                                                        width: '40px',
+                                                        textAlign: "center",
+                                                        border: 'none',
+                                                        borderRadius: 0
+                                                    }}
+                                                    controls={false}
+                                                    onBlur={(e) => {
+                                                        const value = parseInt(e.target.value);
+                                                        if (!value || value < 1) {
+                                                            handleQuantityChange(1, item);
+                                                        }
+                                                    }}
+                                                />
+                                                <Button
+                                                    type="text"
+                                                    size="small"
+                                                    onClick={() => handleIncreaseAmount(item.product_id || item.id)}
+                                                    className="increase-btn"
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '32px',
+                                                        padding: 0,
+                                                        border: 'none',
+                                                        borderLeft: '1px solid #d9d9d9',
+                                                        borderRadius: 0,
+                                                        backgroundColor: '#fafafa',
+                                                        color: '#666'
+                                                    }}
+                                                >
+                                                    +
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                    <Col span={3}>
+                                        <div style={{ fontSize: '18px', color: '#ff4d4f', fontWeight: '600' }}>
+                                            {((item.price || 0) * (item.amount || 1)).toLocaleString()}đ
+                                        </div>
+                                    </Col>
+                                </Row>
+                            ))
+                        )}
                     </Card>
                 </Col>
 
@@ -304,10 +332,26 @@ const Cart = () => {
                     <Card title="Tổng Cộng Giỏ Hàng" className="summary-card">
                         <Row className="cart-summary-item">
                             <Col span={12}>
-                                <strong>Tổng:</strong>
+                                <strong>Tổng tiền hàng:</strong>
                             </Col>
                             <Col span={12} className="text-right">
                                 {totalPrice.toLocaleString()} VNĐ
+                            </Col>
+                        </Row>
+                        <Row className="cart-summary-item">
+                            <Col span={12}>
+                                <strong>Phí vận chuyển:</strong>
+                            </Col>
+                            <Col span={12} className="text-right">
+                                Miễn phí
+                            </Col>
+                        </Row>
+                        <Row className="cart-summary-item" style={{ borderTop: '2px solid #f0f0f0', marginTop: '16px', paddingTop: '16px' }}>
+                            <Col span={12}>
+                                <strong style={{ fontSize: '18px' }}>Tổng thanh toán:</strong>
+                            </Col>
+                            <Col span={12} className="text-right">
+                                <span style={{ fontSize: '20px', color: '#ff4d4f' }}>{totalPrice.toLocaleString()} VNĐ</span>
                             </Col>
                         </Row>
                         <Input
@@ -321,6 +365,7 @@ const Cart = () => {
                             type="primary"
                             className="checkout-button"
                             onClick={handleNavigateInfoOrder}
+                            disabled={order.length === 0}
                         >
                             TIẾN HÀNH THANH TOÁN
                         </Button>
