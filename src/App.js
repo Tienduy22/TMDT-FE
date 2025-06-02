@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { updateUser } from "./Redux/reducers/userReducer";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -18,59 +18,82 @@ import ProductCategory from "./Pages/ProductCategory";
 import Cart from "./Pages/Cart";
 import InfoOrder from "./Pages/InfoOrder";
 import SuccessOrder from "./Pages/SuccessOrder";
-
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import AdminLayout from './Admin/layouts/AdminLayout';
+import Dashboard from './Admin/components/Dashboard';
+import Products from './Admin/components/Products';
+import Orders from './Admin/components/Orders';
+import Customers from './Admin/components/Customers';
+import Inventory from './Admin/components/Inventory';
+import Categories from './Admin/components/Categories';
+import Accounts from './Admin/components/Accounts';
+import AdminLogin from './Admin/components/Login';
 
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     let storageData = localStorage.getItem("token")
-    if(storageData){
+    if (storageData) {
       storageData = JSON.parse(storageData)
       const decode = jwtDecode(storageData);
 
-      if(decode?.id){
+      if (decode?.id) {
         handleGetDetailUser(decode?.id, storageData)
       }
     }
-  },[])
+  }, [])
 
   // Axios Interceptor để xử lý hết hạn token và làm mới token
   UserService.axiosJWT.interceptors.request.use(
     async (config) => {
-      // Lấy thời gian hiện tại
       const currentTime = new Date();
-
-      // Giải mã token để lấy thông tin về thời gian hết hạn
       let storageData = localStorage.getItem("token")
       storageData = JSON.parse(storageData)
       const decode = jwtDecode(storageData);
 
-
-      // Kiểm tra xem token có hết hạn không
       if (decode.exp < currentTime.getTime() / 1000) {
-        // Nếu token hết hạn, làm mới token
         const data = await UserService.RefreshToken();
-
-        // Cập nhật header của yêu cầu với token mới
         config.headers['Authorization'] = `Bearer ${data?.token}`;
       }
-
-      // Trả về config đã cập nhật
       return config;
     },
     (err) => {
-      // Nếu có lỗi xảy ra trong quá trình request
       return Promise.reject(err);
     }
   );
 
-  const handleGetDetailUser = async (id,token) => {
-    const res = await UserService.ProfileUser(id,token)
-    dispatch(updateUser({...res,token: token}))
+  const handleGetDetailUser = async (id, token) => {
+    const res = await UserService.ProfileUser(id, token)
+    dispatch(updateUser({ ...res, token: token }))
   }
+  
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#f8f8f8',
+      },
+      secondary: {
+        main: '#ffd700',
+      },
+    },
+  });
+
+  // Protected Route Component
+  const ProtectedRoute = ({ children }) => {
+    const isAuthenticated = localStorage.getItem('adminToken');
+    
+    if (!isAuthenticated) {
+      return <Navigate to="/admin/login" replace />;
+    }
+
+    return children;
+  };
+
   return (
     <>
       <Routes>
+        {/* User Routes */}
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="products" element={<Product />} />
@@ -82,10 +105,91 @@ function App() {
           <Route path="info_order" element={<InfoOrder />} />
           <Route path="success-order" element={<SuccessOrder />} />
         </Route>
-        <Route path="/login" element={<Login/>} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Dashboard />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Products />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Orders />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/customers"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Customers />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/inventory"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Inventory />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/categories"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Categories />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/admin/accounts"
+          element={
+            <ProtectedRoute>
+              <AdminLayout>
+                <Accounts />
+              </AdminLayout>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }}/>
+      <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }} />
     </>
   );
 }
