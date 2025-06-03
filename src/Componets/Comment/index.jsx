@@ -2,7 +2,7 @@ import { Form, Input, Rate, Typography, List, Button } from "antd";
 import { useEffect, useState } from "react";
 import "./Comment.scss";
 import { UserOutlined } from "@ant-design/icons";
-import { TakeUserID } from "../../Componets/TakeUserID";
+import { TakeUserID } from "../TakeUserID";
 import * as CommentService from "../../Services/commentService";
 
 function CommentProduct(prop) {

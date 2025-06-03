@@ -34,3 +34,10 @@ export const productCategoryGet = async () => {
     )
     return res.data
 }
+
+export const productSearch = async (keyword) => {
+    const res = await axios.get(
+        `${API}/admin/products/search?keyword=${keyword}`
+    )
+    return res.data
+}

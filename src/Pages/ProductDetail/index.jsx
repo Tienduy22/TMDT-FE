@@ -10,7 +10,8 @@ import { addOrder } from '../../Redux/reducers/orderReducer';
 import { InputNumber } from 'antd';
 import { jwtDecode } from "jwt-decode";
 import * as cartService from "@/Services/cartService"
-import CommentProduct from '../Comment';
+import CommentProduct from '../../Componets/Comment';
+import RecommendProducts from '../../Componets/RecommendProducts';
 
 
 function ProductDetail() {
@@ -128,6 +129,9 @@ function ProductDetail() {
                     <Row>
                         <CommentProduct id={id} product={product} />
                     </Row>
+                    {/* <Row>
+                        <RecommendProducts product_id={product._id}  />
+                    </Row> */}
                 </Col>
                 <Col span={4}></Col>
             </Row>

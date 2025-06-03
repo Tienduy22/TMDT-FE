@@ -8,71 +8,65 @@ import "./Product.scss";
 import ProductFilter from "@/Componets/ProductFilters/ProductFilter";
 import PaginationComponents from "@/Componets/Pagination";
 
-
-
-
 function Product() {
     const [product, setProduct] = useState([]);
     const navigate = useNavigate();
-    const [filters, setFilters] = useState({
+    const [filters, setFilters] = useState({});
 
-    });
-
-    useEffect( () => {
+    useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await ProductService.productGet(filters.CategoryId); 
-                setProduct(res.products);  
+                const res = await ProductService.productGet(filters.CategoryId);
+                setProduct(res.products);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
         fetchProduct();
-    },[filters])
+    }, [filters]);
 
     const handleProductClick = (item) => {
         navigate(`/products/detail/${item._id}`);
     };
 
-    const handleFilterChange = (newFilters) =>{
-        setFilters((...preFilters) =>({
+    const handleFilterChange = (newFilters) => {
+        setFilters((...preFilters) => ({
             ...preFilters,
-            ...newFilters,   
-        }))
-    }
+            ...newFilters,
+        }));
+    };
 
     const handleChange = (e) => {
-        console.log(e)
-    }
+        console.log(e);
+    };
 
     return (
         <div className="container-product">
-            <Row className="product-list-title">
-                <ProductFilter filters={filters} onChange={handleFilterChange} />
-            </Row>
-            <Row className="product-main">
-                <Col span={4} className="navbar">
+            <Row className="product-page-layout" gutter={24}>
+                <Col span={4} className="nav-col">
                     <NavbarComponents />
                 </Col>
-                <Col span={20}>
-                    <Row gutter={[16, 16]}>
+
+                <Col span={18}>
+                    <Row className="filter-row">
+                        <ProductFilter
+                            filters={filters}
+                            onChange={handleFilterChange}
+                        />
+                    </Row>
+                    <Row gutter={[16, 16]} className="product-list-item">
                         {product.map((item, index) => (
-                            <Col
-                                span={7}
-                                key={index}
-                                className="product-item"
-                                style={{ marginLeft: "50px" }}
-                                onClick={() => handleProductClick(item)}
-                            >
+                            <Col span={8} key={index} className="product-item" onClick={() => handleProductClick(item)}>
                                 <CardProduct
                                     img={item.thumbnail}
                                     title={item.title}
                                     price={item.price}
+                                    rate={item.rate_total}
                                 />
                             </Col>
                         ))}
                     </Row>
-                    <PaginationComponents onChange={handleChange}/>
+                    <PaginationComponents onChange={handleChange} />
                 </Col>
             </Row>
         </div>

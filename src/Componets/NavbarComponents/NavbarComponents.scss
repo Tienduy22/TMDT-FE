@@ -1,26 +1,28 @@
 .navbar{
-    height: 500px;
+    width: 100%;
+    font-family: "Roboto";
+    
     .navbar-material {
         margin-top: 10px;
     
-        .material-option {
-            margin-bottom: 10px; 
+        .material {
+            font-family: "Roboto";
         }
     }
 
     .navbar-color {
         margin-top: 10px;
     
-        .color-option {
-            margin-bottom: 10px; 
+        .color {
+            font-family: "Roboto";
         }
     }
 
     .navbar-price-range {
         margin-top: 10px;
     
-        .price-range-option {
-            margin-bottom: 10px; 
+        .price-range {
+            font-family: "Roboto"; 
         }
     }
 }
