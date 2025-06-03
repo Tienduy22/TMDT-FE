@@ -10,6 +10,8 @@ import { addOrder } from '../../Redux/reducers/orderReducer';
 import { InputNumber } from 'antd';
 import { jwtDecode } from "jwt-decode";
 import * as cartService from "@/Services/cartService"
+import CommentProduct from '../Comment';
+
 
 function ProductDetail() {
     const { id } = useParams(); 
@@ -76,7 +78,6 @@ function ProductDetail() {
                         </Col>
                         <Col span={12} className='product-info'>
                             <h2 className='title'>{product.title}</h2>
-                            <p className='description'>{product.description}</p>
                             <p className='price'>{product.price} VND</p>
                             <div className='color-option'> Màu sắc:
                                 {color.map((item, index) => (
@@ -123,6 +124,9 @@ function ProductDetail() {
                                 </Row>
                             </div>
                         </Col>
+                    </Row>
+                    <Row>
+                        <CommentProduct id={id} product={product} />
                     </Row>
                 </Col>
                 <Col span={4}></Col>

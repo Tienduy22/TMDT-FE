@@ -5,6 +5,7 @@ const initialState = {
     shippingAddress : [],
     paymentMethod:'',
     itemsPrice: 0,
+    amount:0,
     shippingPrice: 0,
     taxPrice: 0,
     totalPrice: 0,
@@ -32,13 +33,17 @@ export const orderSlice = createSlice({
         increaseAmount: (state, action) => {
             const {orderItem} = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product_id === orderItem.product_id)
-            itemOrder.amount += 1
+            if (itemOrder) {
+                itemOrder.amount += 1
+            }
         },
 
         decreaseAmount: (state, action) => {
             const {orderItem} = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product_id === orderItem.product_id)
-            itemOrder.amount -= 1
+            if (itemOrder && itemOrder.amount > 1) {
+                itemOrder.amount -= 1
+            }
         },
 
         removeOrder: (state, action) => {

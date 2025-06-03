@@ -10,7 +10,7 @@ import {
 } from "../../Redux/reducers/orderReducer";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import * as cartService from "@/Services/cartService";
+import * as cartService from "../../Services/cartService";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -20,6 +20,7 @@ const Cart = () => {
     if (user.token) {
         user_id = jwtDecode(user.token).id;
     }
+    console.log(user_id)
     const reduxOrderItems = useSelector((state) => state.order.orderItems);
 
     const [order, setOrder] = useState(reduxOrderItems);
@@ -36,7 +37,8 @@ const Cart = () => {
     useEffect(() => {
         fetchOrder();
     }, [user_id, reduxOrderItems]);
-    console.log(order);
+
+    console.log(order)
 
     const totalPrice = order?.reduce((total, item) => {
         return total + item.price * item.amount;
@@ -76,7 +78,7 @@ const Cart = () => {
                 })
             );
         } else {
-            await cartService.cartDelete(user_id, productId);
+            await cartService.cartDelete(user_id, productId)
             fetchOrder();
         }
     };
@@ -114,7 +116,6 @@ const Cart = () => {
                             </Col>
                         </Row>
                         {order?.map((item) => {
-                            console.log(item);
                             return (
                                 <Row align="middle" key={item._id}>
                                     <Col span={1}>
@@ -173,7 +174,7 @@ const Cart = () => {
                                                 class="decrease-amount"
                                                 onClick={() => {
                                                     handleDecreaseAmount(
-                                                        item.product
+                                                        item.product_id
                                                     );
                                                 }}
                                             >
@@ -188,7 +189,7 @@ const Cart = () => {
                                                 class="increase-amount"
                                                 onClick={() => {
                                                     handleIncreaseAmount(
-                                                        item.product
+                                                        item.product_id
                                                     );
                                                 }}
                                             >

@@ -18,10 +18,10 @@ export const cartUpdate = async (userId, product) => {
 };
 
 export const cartDelete = async (userId, productId) => {
-    const res = await axios.patch(
-        `${API}/cart/delete/${userId}`,
+    const res = await axios.delete(
+        `${API}/client/cart/delete/${userId}`,
         {
-            data: { productId },
+            data: { productId }
         }
     );
     return res.data;

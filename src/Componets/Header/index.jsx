@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.scss";
 import { Row, Col } from "antd";
@@ -17,14 +17,13 @@ function onSearch(value) {
   console.log(value);
 }
 
-
 function Header() {
-
-  const user = useSelector((state) => state.user)
+  const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+
+  
 
   const handleNavigateLogin = () => {
     navigate("/login")
@@ -51,37 +50,38 @@ function Header() {
   return (
     <div className="header">
       <Row>
-        <Col span={6} className="logo">
+        <Col span={4} className="logo">
           PANDORA
         </Col>
         <Col span={8} className="search-bar">
           <Search
-            placeholder="input search text"
+            placeholder="Tìm kiếm sản phẩm..."
             onSearch={onSearch}
             enterButton
           />
         </Col>
-        <Col span={10} className="nav-links">
-          <a href="/">Home</a>
-          <a href="/products">Products</a>
-          <a href="/contact">Contact</a>
+        <Col span={12} className="nav-links">
+          <a href="/">Trang chủ</a>
+          <a href="/products">Sản phẩm</a>
+          <a href="/contact">Liên hệ</a>
           <Avatar size="large" icon={<UserOutlined />} />
           {user?.fullName ? (
             <div className="account-logout">
               <div onClick={handleProfile}>{user?.fullName}</div>
               <span>|</span>
-              <div onClick={handleLogout}>Logout</div>
+              <div onClick={handleLogout}>Đăng xuất</div>
             </div>
           ) : (
             <div className="login-register">
-              <div onClick={handleNavigateLogin}>Login</div>
+              <div onClick={handleNavigateLogin}>Đăng nhập</div>
               <span>|</span>
-              <div onClick={handleNavigateRegister}>Register</div>
+              <div onClick={handleNavigateRegister}>Đăng ký</div>
             </div>
           )}
 
           <div className="cart-icon">
-            <ShoppingCartOutlined style={{ fontSize: "26px" }} onClick={handleNavigateCart}/>
+            <ShoppingCartOutlined style={{ fontSize: "26px" }} onClick={handleNavigateCart} />
+            
           </div>
         </Col>
       </Row>
