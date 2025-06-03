@@ -10,20 +10,29 @@ import PaginationComponents from "@/Componets/Pagination";
 
 function Product() {
     const [product, setProduct] = useState([]);
-    const navigate = useNavigate();
+    const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState({});
+    const navigate = useNavigate();
+
+    const fetchProduct = async () => {
+        try {
+            const res = await ProductService.productGet(
+                filters.CategoryId,
+                currentPage
+            );
+            setProduct(res.products);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const res = await ProductService.productGet(filters.CategoryId);
-                setProduct(res.products);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
         fetchProduct();
-    }, [filters]);
+    }, [filters, currentPage]);
+
+    const handleChangePagination = (e) => {
+        setCurrentPage(e);
+    };
 
     const handleProductClick = (item) => {
         navigate(`/products/detail/${item._id}`);
@@ -34,10 +43,7 @@ function Product() {
             ...preFilters,
             ...newFilters,
         }));
-    };
-
-    const handleChange = (e) => {
-        console.log(e);
+        setCurrentPage(1);
     };
 
     return (
@@ -55,8 +61,13 @@ function Product() {
                         />
                     </Row>
                     <Row gutter={[16, 16]} className="product-list-item">
-                        {product.map((item, index) => (
-                            <Col span={8} key={index} className="product-item" onClick={() => handleProductClick(item)}>
+                        {product?.map((item, index) => (
+                            <Col
+                                span={8}
+                                key={index}
+                                className="product-item"
+                                onClick={() => handleProductClick(item)}
+                            >
                                 <CardProduct
                                     img={item.thumbnail}
                                     title={item.title}
@@ -66,7 +77,12 @@ function Product() {
                             </Col>
                         ))}
                     </Row>
-                    <PaginationComponents onChange={handleChange} />
+                    <div className="pagination">
+                        <PaginationComponents
+                            onChange={handleChangePagination}
+                            category_id={filters.CategoryId}
+                        />
+                    </div>
                 </Col>
             </Row>
         </div>

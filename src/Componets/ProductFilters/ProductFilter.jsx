@@ -10,12 +10,11 @@ function ProductFilter ({filters, onChange}){
         }
         onChange(newFilters)
 
-        console.log(newFilters)
     }
 
     return(
         <>
-            <FilterByCategory  onChange={handleFilterCategory}/>
+            <FilterByCategory  onChange={handleFilterCategory} activeCategoryId={filters.CategoryId}/>
             
         </>
     )

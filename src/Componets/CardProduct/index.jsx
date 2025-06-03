@@ -15,7 +15,7 @@ const CardProducts = (props) => {
             <div className="card-rate">
                 <Rate defaultValue={rate} />
             </div>
-            <div className="card-price">{price.toLocaleString()}đ</div>
+            <div className="card-price">{price ? price.toLocaleString() : "0"}đ</div>
         </Card>
     );
 };

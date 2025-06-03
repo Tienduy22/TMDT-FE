@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Col, Row } from "antd";
 import "./FilterByCategory.scss";
 
-function FilterByCategory({ onChange }) {
+function FilterByCategory({ onChange, activeCategoryId }) {
     const [categories, setCategory] = useState([]);
 
     useEffect(() => {
@@ -36,7 +36,12 @@ function FilterByCategory({ onChange }) {
                             />
                         </div>
                         <div
-                            className="product-title"
+                            className={
+                                "product-title" +
+                                (activeCategoryId === category._id
+                                    ? " active"
+                                    : "")
+                            }
                             onClick={() => handleClick(category)}
                         >
                             {category.title}

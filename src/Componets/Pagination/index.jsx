@@ -1,28 +1,36 @@
 import { Pagination } from "antd";
 import { useEffect, useState } from "react";
-import { paginationGet } from "../../Services/productService";
+import * as ProductService from "../../Services/productService"
 
-const PaginationComponents = () => {
 
-    const [current,setCurrent] = useState();
+const PaginationComponents = ({onChange,category_id}) => {
+    const [totalProduct,setTotalProoduct] = useState();
+    const [currentPage,setCurrentPage] = useState();
+
+    const CountProduct = async() => {
+        const res = await ProductService.countProduct(category_id)
+        setTotalProoduct(res.count)
+    }
+
+    useEffect(() => {
+        CountProduct()
+        setCurrentPage(1)
+    },[category_id])
 
     const handleCurrentPage = (e) => {
-        setCurrent(e)
-        console.log(e)
-        const fetchDataPagination = async () => {
-            const res = await paginationGet(current)
-            console.log(res)
+        setCurrentPage(e)
+        if(onChange){
+            onChange(e)
         }
-        fetchDataPagination()
     };
     return (
         <>
             <Pagination
                 onChange={handleCurrentPage}
-                current={current}
+                current={currentPage}
                 pageSize={9}
                 defaultCurrent={1}
-                total={20}
+                total={totalProduct}
                 align="center"
             />
         </>

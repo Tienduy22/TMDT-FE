@@ -47,8 +47,9 @@
             transition: width 0.3s ease;
         }
 
-        &:hover::after {
-            width: 40%;
+        &:hover::after,
+        &.active::after {
+            width: 40%; 
         }
     }
 }

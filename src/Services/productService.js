@@ -4,15 +4,38 @@ const API = process.env.REACT_APP_API_BACKEND
 
 console.log(API)
 
-export const productGet = async (category) => {
+export const productGet = async (category,currentPage) => {
     let res = {}
-    if(category){
+    if(category && currentPage){
         res = await axios.get(
-            `${API}/admin/products?productCategory=${category}`,
+            `${API}/admin/products?productCategory=${category}&page=${currentPage}`,
+        )
+    } 
+
+    else if(currentPage){
+        res = await axios.get(
+            `${API}/admin/products?page=${currentPage}`,
+        )
+    }
+    
+    else {
+        res = await axios.get(
+            `${API}/admin/products`,
+        )
+    }
+    return res.data
+}
+
+export const countProduct = async(category_id) => {
+    let res;
+    if(category_id) {
+        console.log("OK")
+        res = await axios.get(
+            `${API}/admin/products/count?category_id=${category_id}`,
         )
     } else {
         res = await axios.get(
-            `${API}/admin/products`,
+            `${API}/admin/products/count`,
         )
     }
     return res.data

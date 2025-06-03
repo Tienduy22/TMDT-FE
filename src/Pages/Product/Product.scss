@@ -24,23 +24,23 @@
         margin-top: 30px;
         margin-bottom: 20px;
         padding: 16px 24px;
-        height: 130px;
-
+        height: 120px;
     }
     .product-list-item {
         display: flex;
         flex-wrap: wrap;
         gap: 16px;
         padding: 24px 0;
+        padding-bottom: 20px !important;
         min-height: 400px;
         width: 100%;
         background: #fff;
-        margin-left: 1px!important;
+        margin-left: 1px !important;
         border-radius: 10px;
         box-sizing: border-box;
+        justify-content: center;
 
         .product-item {
-            padding-left: 20px!important;
             flex: 1 1 30%;
             max-width: 32%;
             min-width: 250px;
@@ -48,5 +48,11 @@
             display: flex;
             justify-content: center;
         }
+    }
+
+    .pagination {
+        margin-top: 20px;
+        justify-content: center;
+        padding-bottom: 10px;
     }
 }
