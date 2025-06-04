@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Row } from "antd";
-import NavbarComponents from "@/Componets/NavbarComponents";
+
 import CardProduct from "@/Componets/CardProduct";
 import * as ProductService from "@/Services/productService";
 import "./Product.scss";
 import ProductFilter from "@/Componets/ProductFilters/ProductFilter";
 import PaginationComponents from "@/Componets/Pagination";
+import NavbarComponents from "../../Componets/NavbarComponents";
 
 function Product() {
     const [product, setProduct] = useState([]);

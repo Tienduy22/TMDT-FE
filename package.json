@@ -20,6 +20,7 @@
     "dotenv": "^16.5.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.512.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-paypal-button-v2": "^2.6.3",

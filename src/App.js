@@ -9,7 +9,7 @@ import Layout from "./Layouts";
 import Home from "./Pages/Home";
 import Product from "./Pages/Product";
 import ProductDetail from "./Pages/ProductDetail";
-import Contact from "./Pages/Contact";
+import Contact from "./Pages/About";
 import Login from "./Pages/User/Login";
 import Register from "./Pages/User/Register";
 import * as UserService from "./Services/userService";
@@ -18,6 +18,7 @@ import ProductCategory from "./Pages/ProductCategory";
 import Cart from "./Pages/Cart";
 import InfoOrder from "./Pages/InfoOrder";
 import SuccessOrder from "./Pages/SuccessOrder";
+import AboutPage from "./Pages/About";
 
 
 function App() {
@@ -76,7 +77,7 @@ function App() {
           <Route path="products" element={<Product />} />
           <Route path="products/detail/:id" element={<ProductDetail />} />
           <Route path="products/:slug" element={<ProductCategory />} />
-          <Route path="contact" element={<Contact />} />
+          <Route path="about" element={<AboutPage />} />
           <Route path="profile" element={<Profile />} />
           <Route path="cart" element={<Cart />} />
           <Route path="info_order" element={<InfoOrder />} />

@@ -20,7 +20,7 @@ const Cart = () => {
     if (user.token) {
         user_id = jwtDecode(user.token).id;
     }
-    console.log(user_id)
+    console.log(user_id);
     const reduxOrderItems = useSelector((state) => state.order.orderItems);
 
     const [order, setOrder] = useState(reduxOrderItems);
@@ -38,7 +38,7 @@ const Cart = () => {
         fetchOrder();
     }, [user_id, reduxOrderItems]);
 
-    console.log(order)
+    console.log(order);
 
     const totalPrice = order?.reduce((total, item) => {
         return total + item.price * item.amount;
@@ -78,7 +78,7 @@ const Cart = () => {
                 })
             );
         } else {
-            await cartService.cartDelete(user_id, productId)
+            await cartService.cartDelete(user_id, productId);
             fetchOrder();
         }
     };
@@ -94,31 +94,38 @@ const Cart = () => {
     return (
         <div className="cart-container">
             <Row gutter={[16, 16]}>
-                {/* Cart item */}
-                <Col span={16} className="cart-item">
-                    <Card hoverable className="product-card">
+                <Col span={16} className="cart__main">
+                    <Card hoverable className="cart__main-card">
                         <Row>
                             <Col
-                                span={15}
-                                className="product-image"
-                                style={{ paddingLeft: 40 }}
+                                span={12}
+                                className="cart__main-header cart__main-header--product"
                             >
-                                <h2> Sản phẩm</h2>
+                                <p>Sản phẩm</p>
                             </Col>
-                            <Col span={3} className="product-image">
-                                <h2> Giá</h2>
+                            <Col
+                                span={4}
+                                className="cart__main-header cart__main-header--price"
+                            >
+                                <p>Giá</p>
                             </Col>
-                            <Col span={3} className="product-image">
-                                <h2> Số lượng</h2>
+                            <Col
+                                span={4}
+                                className="cart__main-header cart__main-header--amount"
+                            >
+                                <p>Số lượng</p>
                             </Col>
-                            <Col span={3} className="product-image">
-                                <h2> Tạm tính</h2>
+                            <Col
+                                span={4}
+                                className="cart__main-header cart__main-header--total"
+                            >
+                                <p>Tạm tính</p>
                             </Col>
                         </Row>
-                        {order?.map((item) => {
-                            return (
+                        {order && order.length > 0 ? (
+                            order.map((item) => (
                                 <Row align="middle" key={item._id}>
-                                    <Col span={1}>
+                                    <Col span={1} className="cart__main-action">
                                         <Button
                                             type="primary"
                                             shape="circle"
@@ -139,85 +146,97 @@ const Cart = () => {
                                                     item.product_id
                                                 )
                                             }
-                                        ></Button>
-                                    </Col>
-                                    <Col span={4} className="product-image">
-                                        <img
-                                            src={item.image} // Replace with your image
-                                            alt="Product"
-                                            className="img-product"
                                         />
                                     </Col>
-                                    <Col span={10} className="product-details">
-                                        <h3 className="product-title">
-                                            {item.name}
-                                        </h3>
+                                    <Col span={4} className="cart__main-image">
+                                        <img
+                                            src={item.image}
+                                            alt="Product"
+                                            className="cart__main-img"
+                                        />
                                     </Col>
-                                    <Col span={3} className="product-price">
+                                    <Col
+                                        span={7}
+                                        className="cart__main-details"
+                                    >
+                                        <p className="cart__main-title">
+                                            {item.name}
+                                        </p>
+                                    </Col>
+                                    <Col span={4} className="cart__main-price">
                                         {item.price.toLocaleString()}đ
                                     </Col>
-                                    <Col span={3} className="text-right">
-                                        {/* <InputNumber
-                                            min={1}
-                                            max={10}
-                                            step={1}
-                                            value={item.amount}
-                                            onChange={(value) => {
-                                                setAmount(value)
-                                                handleChangeAmount(
-                                                    item.product
-                                                );
-                                            }}
-                                        /> */}
-                                        <div class="amount">
+                                    <Col span={4} className="cart__main-amount">
+                                        <div className="cart__main-amount-group">
                                             <button
-                                                class="decrease-amount"
-                                                onClick={() => {
+                                                className="cart__main-amount-btn"
+                                                onClick={() =>
                                                     handleDecreaseAmount(
                                                         item.product_id
-                                                    );
-                                                }}
+                                                    )
+                                                }
                                             >
                                                 -
                                             </button>
                                             <input
-                                                class="amount-input"
+                                                className="cart__main-amount-input"
                                                 value={item.amount}
                                                 min="1"
+                                                readOnly
                                             />
                                             <button
-                                                class="increase-amount"
-                                                onClick={() => {
+                                                className="cart__main-amount-btn"
+                                                onClick={() =>
                                                     handleIncreaseAmount(
                                                         item.product_id
-                                                    );
-                                                }}
+                                                    )
+                                                }
                                             >
                                                 +
                                             </button>
                                         </div>
                                     </Col>
-                                    <Col span={3} className="text-right">
+                                    <Col span={4} className="cart__main-total">
                                         {(
                                             item.price * item.amount
                                         ).toLocaleString()}
                                         đ
                                     </Col>
                                 </Row>
-                            );
-                        })}
+                            ))
+                        ) : (
+                            <div
+                                style={{
+                                    textAlign: "center",
+                                    padding: "20px 0",
+                                }}
+                                className="no-product"
+                            >
+                                <img src="/online-shopping.png"/>
+                                <p>Chưa có sản phẩm nào</p>
+                            </div>
+                        )}
                     </Card>
                 </Col>
 
-                {/* Cart details */}
                 <Col span={8} className="cart-summary">
                     <Card title="Tổng Cộng Giỏ Hàng" className="summary-card">
-                        <Row className="cart-summary-item">
+                        <Row className="ship-price">
                             <Col span={12}>
-                                <strong>Tổng:</strong>
+                                <strong className="text">
+                                    Chi phí vận chuyển:
+                                </strong>
                             </Col>
                             <Col span={12} className="text-right">
-                                {totalPrice.toLocaleString()} VNĐ
+                                35.000 VNĐ
+                            </Col>
+                        </Row>
+                        <Row className="cart-summary-item">
+                            <Col span={12}>
+                                <strong className="text">Tổng:</strong>
+                            </Col>
+                            <Col span={12} className="text-right">
+                                {(totalPrice + 35000).toLocaleString()} VNĐ
                             </Col>
                         </Row>
                         <Input

@@ -1,6 +1,6 @@
-import React from "react";
+import {useState} from "react";
 import { Cascader } from "antd";
-import { Checkbox } from "antd";
+import { Radio } from "antd";
 import "./NavbarComponents.scss";
 
 const NavbarComponents = () => {
@@ -17,12 +17,6 @@ const NavbarComponents = () => {
         { value: "platinum", label: "Bạch kim" },
     ];
 
-    const optionsColor = [
-        { value: "red", label: "Đỏ" },
-        { value: "blue", label: "Xanh" },
-        { value: "green", label: "Xanh lá" },
-    ];
-
     const optionPriceRange = [
         { value: "0-500k", label: "Dưới 500k" },
         { value: "500k-1m", label: "Từ 500k đến 1 triệu" },
@@ -31,12 +25,19 @@ const NavbarComponents = () => {
         { value: "5m+", label: "Trên 5 triệu" },
     ];
 
-    const onChangeSort = (value, selectedOptions) => {
-        console.log(value, selectedOptions);
-    };
+    const [selectedMaterial, setSelectedMaterial] = useState(""); 
+    const [selectedPriceRange, setSelectedPriceRange] = useState(""); 
 
     const onChangeMaterial = (e) => {
-        console.log(`checked = ${e.target.checked}`);
+        setSelectedMaterial(e.target.value);  
+    };
+
+    const onChangePriceRange = (e) => {
+        setSelectedPriceRange(e.target.value); 
+    };
+
+    const onChangeSort = (value, selectedOptions) => {
+        console.log(value, selectedOptions);
     };
 
     return (
@@ -50,35 +51,31 @@ const NavbarComponents = () => {
 
             <div className="navbar-material">
                 <h3>Chất liệu</h3>
-                {optionsMaterial.map((option) => (
-                    <div key={option.value} className="material-option">
-                        <Checkbox onChange={onChangeMaterial}>
-                            <p className="material">{option.label}</p>
-                        </Checkbox>
-                    </div>
-                ))}
-            </div>
-
-            <div className="navbar-color">
-                <h3>Màu sắc</h3>
-                {optionsColor.map((option) => (
-                    <div key={option.value} className="color-option">
-                        <Checkbox onChange={onChangeMaterial}>
-                            <p className="color">{option.label}</p>
-                        </Checkbox>
-                    </div>
-                ))}
+                <Radio.Group
+                    onChange={onChangeMaterial}
+                    value={selectedMaterial}
+                >
+                    {optionsMaterial.map((option) => (
+                        <div key={option.value} className="material-option">
+                            <Radio value={option.value}>
+                                <p className="material">{option.label}</p>
+                            </Radio>
+                        </div>
+                    ))}
+                </Radio.Group>
             </div>
 
             <div className="navbar-price-range">
                 <h3>Mức giá</h3>
+                <Radio.Group onChange={onChangePriceRange} value={selectedPriceRange}>
                 {optionPriceRange.map((option) => (
                     <div key={option.value} className="price-range-option">
-                        <Checkbox onChange={onChangeMaterial}>
+                        <Radio value={option.value}>
                             <p className="price-range">{option.label}</p>
-                        </Checkbox>
+                        </Radio>
                     </div>
                 ))}
+            </Radio.Group>
             </div>
         </div>
     );

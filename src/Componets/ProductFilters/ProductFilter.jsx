@@ -14,8 +14,7 @@ function ProductFilter ({filters, onChange}){
 
     return(
         <>
-            <FilterByCategory  onChange={handleFilterCategory} activeCategoryId={filters.CategoryId}/>
-            
+            <FilterByCategory  onChange={handleFilterCategory} activeCategoryId={filters.CategoryId}/>          
         </>
     )
 }

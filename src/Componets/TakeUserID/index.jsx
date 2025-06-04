@@ -3,9 +3,12 @@ import { useSelector } from "react-redux";
 
 export const TakeUserID = () => {
     const user = useSelector((state) => state.user);
-
-
-    const user_id = jwtDecode(user.token).id;
+    let user_id;
+    if (user.token) {
+        user_id = jwtDecode(user.token).id;
+    } else {
+        user_id = "";
+    }
     const userName = user.fullName;
 
     const data = {

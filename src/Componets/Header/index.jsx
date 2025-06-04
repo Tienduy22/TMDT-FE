@@ -106,7 +106,7 @@ function Header() {
                 <Col span={12} className="nav-links">
                     <a href="/">Trang chủ</a>
                     <a href="/products">Sản phẩm</a>
-                    <a href="/contact">Liên hệ</a>
+                    <a href="/about">Về chúng tôi</a>
                     <Avatar size="large" icon={<UserOutlined />} />
                     {user?.fullName ? (
                         <div className="account-logout">
