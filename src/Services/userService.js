@@ -59,3 +59,23 @@ export const updateUser = async(id,data) => {
     const res = await axios.patch(`${API}/client/user/update/${id}`,data)
     return res.data
 }
+
+export const UserGet = async() => {
+    const res = await axios.get(`${API}/client/user/`)
+    return res.data
+}
+
+export const UserDetail = async(user_id) => {
+    const res = await axios.get(`${API}/client/user/detail/${user_id}`)
+    return res.data
+}
+
+export const UserEdit = async(user_id,data) => {
+    const res = await axios.patch(`${API}/client/user/edit/${user_id}`,data)
+    return res.data
+}
+
+export const UserDelete = async(user_id) => {
+    const res = await axios.delete(`${API}/client/user/delete/${user_id}`)
+    return res.data
+}

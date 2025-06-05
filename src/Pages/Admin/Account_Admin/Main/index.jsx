@@ -7,99 +7,113 @@ import {
     DeleteOutlined,
     EyeOutlined,
 } from "@ant-design/icons";
-import "./OrderAdmin.scss";
-import * as OrderService from "../../../../Services/orderService";
+import "./AccountAdmin.scss";
+import * as AccountService from "../../../../Services/accountService";
 import { useNavigate } from "react-router-dom";
 
-function OrderAdmin() {
-    const [orders, setOrders] = useState([]);
+function AccountAdmin() {
+    const [accounts, setAccounts] = useState([]);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const OrdersGet = async () => {
-            const res = await OrderService.OrderGet();
-            setOrders(res.orders);
+        const AccountsGet = async () => {
+            const res = await AccountService.AccountGet();
+            setAccounts(res);
+            setLoading(false);
         };
-        OrdersGet();
+        AccountsGet();
     }, []);
 
+
     const handleDelete = async (id) => {
-        const res = await OrderService.OrderDelete(id)
+        const res = await AccountService.AccountDelete(id);
         if (res.code === 200) {
-            setOrders((prevOrder) => prevOrder.filter(order => order._id !== id));
-            message.success("Xóa đơn hàng thành công!");
+            setAccounts((prevAccount) =>
+                prevAccount.filter((account) => account._id !== id)
+            );
+            message.success("Xóa tài khoản thành công!");
         } else {
-            message.error("Xóa đơn hàng thất bại!");
+            message.error("Xóa tài khoản thất bại!");
         }
     };
 
+    if (loading) {
+        return <div>Đang tải...</div>;
+    }
+
     return (
-        <div className="order-admin">
-            <div className="order-admin__header">
-                <h2>Quản lý đơn hàng</h2>
+        <div className="account-admin">
+            <div className="account-admin__header">
+                <h2>Quản lý tài khoản</h2>
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => navigate("/admin/account/create")}
+                >
+                    Thêm sản phẩm
+                </Button>
             </div>
-            <div className="order-admin__search">
+            <div className="account-admin__search">
                 <Input
-                    placeholder="Tìm kiếm đơn hàng..."
+                    placeholder="Tìm kiếm tài khoản..."
                     prefix={<SearchOutlined />}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     style={{ width: 300 }}
                 />
             </div>
-            <div className="order-grid">
+            <div className="account-grid">
                 {/* Header */}
-                <Row className="order-grid-header" gutter={0}>
+                <Row className="account-grid-header" gutter={0}>
                     <Col span={2}>
                         <b>STT</b>
                     </Col>
-                    <Col span={5}>
-                        <b>Tên khách hàng</b>
-                    </Col>
-                    <Col span={3}>
-                        <b>Tổng tiền</b>
+                    <Col span={4}>
+                        <b>Tên tài khoản</b>
                     </Col>
                     <Col span={4}>
-                        <b>Ngày mua</b>
+                        <b>Email</b>
                     </Col>
                     <Col span={4}>
-                        <b>Trạng thái</b>
+                        <b>Điện thoại</b>
+                    </Col>
+                    <Col span={4}>
+                        <b>Quyền</b>
                     </Col>
                     <Col span={6}>
                         <b>Hành động</b>
                     </Col>
                 </Row>
 
-                {orders.length === 0 ? (
+                {accounts.length === 0 ? (
                     <Row
-                        className="order-grid-row"
+                        className="account-grid-row"
                         style={{ textAlign: "center" }}
                     >
-                        <Col span={24}>Không có đơn hàng.</Col>
+                        <Col span={24}>Không có tài khoản.</Col>
                     </Row>
                 ) : (
-                    orders.map((item, index) => (
+                    accounts.map((item, index) => (
                         <Row
-                            className="order-grid-row"
+                            className="account-grid-row"
                             key={item.key}
                             gutter={0}
                             align="middle"
                         >
                             <Col span={2}>{(index += 1)}</Col>
-                            <Col span={5}>{item.infoUser?.name}</Col>
-                            <Col span={3}>{(item.totalPrice).toLocaleString()} đ</Col>
-                            <Col span={4}>
-                                {new Date(item.createdAt).toLocaleDateString()}
-                            </Col>
-                            <Col span={4}>{item.status || ""}</Col>
+                            <Col span={4}>{item.fullName}</Col>
+                            <Col span={4}>{item.email}</Col>
+                            <Col span={4}>{item.phone}</Col>
+                            <Col span={4}>{item.role_name}</Col>
                             <Col span={6}>
                                 <Button
                                     icon={<EyeOutlined />}
                                     size="small"
                                     onClick={() =>
                                         navigate(
-                                            `/admin/order/detail/${item._id}`
+                                            `/admin/account/detail/${item._id}`
                                         )
                                     }
                                     style={{ marginRight: 4 }}
@@ -111,7 +125,7 @@ function OrderAdmin() {
                                     size="small"
                                     onClick={() =>
                                         navigate(
-                                            `/admin/order/edit/${item._id}`
+                                            `/admin/account/edit/${item._id}`
                                         )
                                     }
                                     style={{ marginRight: 4 }}
@@ -135,4 +149,4 @@ function OrderAdmin() {
     );
 }
 
-export default OrderAdmin;
+export default AccountAdmin;

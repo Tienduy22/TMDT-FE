@@ -30,6 +30,12 @@ import Category_Edit from "./Pages/Admin/Category_Admin/Edit";
 import OrderAdmin from "./Pages/Admin/Order_Admin/Main";
 import Order_Detail from "./Pages/Admin/Order_Admin/Detail";
 import Order_Edit from "./Pages/Admin/Order_Admin/Edit";
+import UserAdmin from "./Pages/Admin/User_Admin/Main";
+import User_Detail from "./Pages/Admin/User_Admin/Detail";
+import AccountAdmin from "./Pages/Admin/Account_Admin/Main";
+import Account_Detail from "./Pages/Admin/Account_Admin/Detail";
+import Account_Edit from "./Pages/Admin/Account_Admin/Edit";
+import Account_Create from "./Pages/Admin/Account_Admin/Create";
 
 
 function App() {
@@ -107,6 +113,12 @@ function App() {
           <Route path="order" element={<OrderAdmin />} />
           <Route path="order/detail/:order_id" element={<Order_Detail />} />
           <Route path="order/edit/:order_id" element={<Order_Edit />} />
+          <Route path="customer" element={<UserAdmin />} />
+          <Route path="customer/detail/:user_id" element={<User_Detail />} />
+          <Route path="account" element={<AccountAdmin />} />
+          <Route path="account/detail/:account_id" element={<Account_Detail />} />
+          <Route path="account/edit/:account_id" element={<Account_Edit />} />
+          <Route path="account/create" element={<Account_Create />} />
         </Route>
       </Routes>
       <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }}/>
