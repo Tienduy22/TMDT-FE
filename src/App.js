@@ -9,7 +9,6 @@ import Layout from "./Layouts";
 import Home from "./Pages/Home";
 import Product from "./Pages/Product";
 import ProductDetail from "./Pages/ProductDetail";
-import Contact from "./Pages/About";
 import Login from "./Pages/User/Login";
 import Register from "./Pages/User/Register";
 import * as UserService from "./Services/userService";
@@ -19,6 +18,15 @@ import Cart from "./Pages/Cart";
 import InfoOrder from "./Pages/InfoOrder";
 import SuccessOrder from "./Pages/SuccessOrder";
 import AboutPage from "./Pages/About";
+import Admin from "./Pages/Admin/Layout_Admin";
+import ProductAdmin from "./Pages/Admin/Product_Admin/Main";
+import Product_Detail from "./Pages/Admin/Product_Admin/Detail";
+import Product_Edit from "./Pages/Admin/Product_Admin/Edit";
+import Product_Create from "./Pages/Admin/Product_Admin/Create";
+import CategoryAdmin from "./Pages/Admin/Category_Admin/Main";
+import Category_Detail from "./Pages/Admin/Category_Admin/Detail";
+import Category_Create from "./Pages/Admin/Category_Admin/Create";
+import Category_Edit from "./Pages/Admin/Category_Admin/Edit";
 
 
 function App() {
@@ -60,7 +68,6 @@ function App() {
       return config;
     },
     (err) => {
-      // Nếu có lỗi xảy ra trong quá trình request
       return Promise.reject(err);
     }
   );
@@ -85,6 +92,16 @@ function App() {
         </Route>
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin" element={<Admin />}>
+          <Route path="product" element={<ProductAdmin />} />
+          <Route path="product/detail/:product_id" element={<Product_Detail />} />
+          <Route path="product/edit/:product_id" element={<Product_Edit />} />
+          <Route path="product/create" element={<Product_Create />} />
+          <Route path="category" element={<CategoryAdmin />} />
+          <Route path="category/detail/:category_id" element={<Category_Detail />} />
+          <Route path="category/create" element={<Category_Create />} />
+          <Route path="category/edit/:category_id" element={<Category_Edit />} />
+        </Route>
       </Routes>
       <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }}/>
     </>
