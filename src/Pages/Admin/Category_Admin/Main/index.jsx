@@ -29,16 +29,16 @@ function CategoryAdmin() {
         const res = await CategoryService.categoryDelete(id)
         if (res.code === 200) {
             setCategory((prevCategory) => prevCategory.filter(category => category._id !== id));
-            message.success("Xóa sản phẩm thành công!");
+            message.success("Xóa danh mục thành công!");
         } else {
-            message.error("Xóa sản phẩm thất bại!");
+            message.error("Xóa danh mục thất bại!");
         }
     };
 
 
     return (
-        <div className="product-admin">
-            <div className="product-admin__header">
+        <div className="category-admin">
+            <div className="category-admin__header">
                 <h2>Quản lý danh mục sản phẩm</h2>
                 <Button
                     type="primary"
@@ -48,7 +48,7 @@ function CategoryAdmin() {
                     Thêm danh mục sản phẩm
                 </Button>
             </div>
-            <div className="product-admin__search">
+            <div className="category-admin__search">
                 <Input
                     placeholder="Tìm kiếm danh mục sản phẩm..."
                     prefix={<SearchOutlined />}
@@ -57,9 +57,9 @@ function CategoryAdmin() {
                     style={{ width: 300 }}
                 />
             </div>
-            <div className="product-grid">
+            <div className="category-grid">
                 {/* Header */}
-                <Row className="product-grid-header" gutter={0}>
+                <Row className="category-grid-header" gutter={0}>
                     <Col span={2}>
                         <b>STT</b>
                     </Col>
@@ -79,7 +79,7 @@ function CategoryAdmin() {
 
                 {categories.length === 0 ? (
                     <Row
-                        className="product-grid-row"
+                        className="category-grid-row"
                         style={{ textAlign: "center" }}
                     >
                         <Col span={24}>Không có danh mục sản phẩm nào.</Col>
@@ -87,7 +87,7 @@ function CategoryAdmin() {
                 ) : (
                     categories.map((item) => (
                         <Row
-                            className="product-grid-row"
+                            className="category-grid-row"
                             key={item.key}
                             gutter={0}
                             align="middle"

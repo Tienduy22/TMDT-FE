@@ -1,105 +1,135 @@
-import { Form, Input, Button, message, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { Form, Input,Select,Col,Row,Button,message } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import * as CategoryService from "../../../../Services/categoryService";
-import * as ProductService from "../../../../Services/productService";
+import * as OrderService from "../../../../Services/orderService";
+const { Option } = Select;
 
-function Category_Edit() {
-    const [imageFile, setImageFile] = useState(null);
+function Order_Edit() {
+    const { order_id } = useParams();
     const navigate = useNavigate();
-    const { category_id } = useParams();
-    const [category, setCategory] = useState(null);
+    const [order, setOrder] = useState(null);
+    const [user,setUser] = useState({});
+    const [loading,setLoading] = useState(true)
 
-    const fetchCategory = async () => {
-        const res = await ProductService.productCategoryDetail(category_id);
-        setCategory(res.data);
-    };
-
-    useEffect(() => {
-        fetchCategory();
-    }, []);
-
-    const handleImageChange = (info) => {
-        if (info.file) {
-            setImageFile(info.file.originFileObj);
-        } else if (info.file.status === "error") {
-            message.error("Lỗi khi tải ảnh!");
-        }
+    const fetchOrder = async () => {
+        const res = await OrderService.OrderDetail(order_id);
+        setOrder(res.order);
+        setUser(res.order.infoUser)
+        setLoading(false)
     };
 
     const handleSubmit = async (values) => {
-        const formData = new FormData();
-
-        Object.keys(values).forEach((key) => {
-            if (key === "image" && imageFile) {
-                console.log(imageFile)
-                formData.append("image", imageFile);
-            } else {
-                formData.append(key, values[key]);
-            }
-        });
-
-        for (let [key, value] of formData.entries()) {
-        console.log(key, value);  // Xem các giá trị trong FormData
+        const res = await OrderService.OrderEdit(order_id,values);
+        if (res.code === 200) {
+            message.success("Cập nhật thành công!");
+            navigate(`/admin/order`);
+        } else {
+            message.error("Cập nhật thất bại!");
+        }
     }
 
-        const res = await CategoryService.categoryUpdate(category_id,formData);
+    useEffect(() => {
+        fetchOrder();
+    }, []);
 
-        if (res.code === 200) {
-            message.success("Cập nhật danh mục thành công!");
-            navigate(`/admin/category`);
-        } else {
-            message.error("Cập nhật danh mục thất bại!");
-        }
-    };
-
-    if (!category) {
+    if (loading) {
         return <div>Đang tải...</div>;
     }
 
     return (
         <Form
             layout="vertical"
-            onFinish={handleSubmit}
             initialValues={{
-                title: category?.title,
-                image: [],
-                position: category?.position,
+                name: user?.name,
+                address: user?.address,
+                phone: user?.phone,
+                email: user?.email,
+                note: user?.note,
+                status: order?.status || "",
+                totalPrice: order?.totalPrice,
+                payment: order?.payment,
             }}
+            onFinish={handleSubmit}
         >
-            {/* Tiêu đề */}
-            <Form.Item label="Tiêu đề" name="title">
-                <Input />
+            <Form.Item label="Tên khách hàng" name="name" >
+                <Input disabled />
             </Form.Item>
-
-            {/* Ảnh */}
-            <Form.Item label="Ảnh" name="image">
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    showUploadList={false}
-                    onChange={handleImageChange}
-                >
-                    <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
-                </Upload>
-                <img
-                    src={category?.thumbnail}
-                    alt="category"
-                    style={{
-                        width: 150,
-                        height: 150,
-                        objectFit: "cover",
-                        borderRadius: 6,
-                    }}
-                />
+            <Form.Item label="Địa chỉ" name="address" >
+                <Input disabled />
             </Form.Item>
-
-            {/* Vị trí */}
-            <Form.Item label="Vị trí" name="position">
-                <Input placeholder="Tự động tăng" />
+            <Form.Item label="Điện thoại" name="phone" >
+                <Input disabled />
             </Form.Item>
+            <Form.Item label="Email" name="email" >
+                <Input disabled />
+            </Form.Item>
+            <Form.Item label="Trạng thái" name="status" >
+                <Select >
+                    <Option value="waiting">Đang chờ vận chuyển</Option>
+                    <Option value="shipping">Đang vận chuyển</Option>
+                    <Option value="finish">Hoàn thành</Option>
+                    <Option value="refund">Hoàn trả</Option>
+                </Select>
+            </Form.Item>
+            <div> 
+                <p style={{marginBottom:20}}>Danh sách sản phẩm</p>
+                <Row className="product-grid-header" gutter={0}>
+                    <Col span={6}>
+                        <b>Ảnh</b>
+                    </Col>
+                    <Col span={12}>
+                        <b>Tên sản phẩm</b>
+                    </Col>
+                    <Col span={6}>
+                        <b>Số lượng</b>
+                    </Col>
+                </Row>
 
+                {order.product.length === 0 ? (
+                    <Row
+                        className="product-grid-row"
+                        style={{ textAlign: "center" }}
+                    >
+                        <Col span={24}>Không có danh mục sản phẩm nào.</Col>
+                    </Row>
+                ) : (
+                    order.product.map((item) => (
+                        <Row
+                            className="product-grid-row"
+                            key={item.name}
+                            gutter={0}
+                            align="middle"
+                        >
+                            <Col span={6}>
+                                {item.image ? (
+                                    <img
+                                        src={item.image}
+                                        alt="product"
+                                        style={{
+                                            width: 100,
+                                            height: 100,
+                                            objectFit: "cover",
+                                            borderRadius: 6,
+                                        }}
+                                    />
+                                ) : (
+                                    <span>Không có ảnh</span>
+                                )}
+                            </Col>
+                            <Col span={12}>{item.name}</Col>
+                            <Col span={6}>{item.amount}</Col>
+                            
+                        </Row>
+                    ))
+                )}
+            </div>
+
+            <Form.Item label="Tổng hóa đơn" name="totalPrice" style={{marginTop:20}} >
+                <Input disabled />
+            </Form.Item>
+            <Form.Item label="Phương thức thanh toán" name="payment" >
+                <Input disabled />
+            </Form.Item>
             <Form.Item>
                 <Button type="primary" htmlType="submit">
                     Cập nhật
@@ -109,4 +139,4 @@ function Category_Edit() {
     );
 }
 
-export default Category_Edit;
+export default Order_Edit;

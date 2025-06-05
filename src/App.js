@@ -27,6 +27,9 @@ import CategoryAdmin from "./Pages/Admin/Category_Admin/Main";
 import Category_Detail from "./Pages/Admin/Category_Admin/Detail";
 import Category_Create from "./Pages/Admin/Category_Admin/Create";
 import Category_Edit from "./Pages/Admin/Category_Admin/Edit";
+import OrderAdmin from "./Pages/Admin/Order_Admin/Main";
+import Order_Detail from "./Pages/Admin/Order_Admin/Detail";
+import Order_Edit from "./Pages/Admin/Order_Admin/Edit";
 
 
 function App() {
@@ -101,6 +104,9 @@ function App() {
           <Route path="category/detail/:category_id" element={<Category_Detail />} />
           <Route path="category/create" element={<Category_Create />} />
           <Route path="category/edit/:category_id" element={<Category_Edit />} />
+          <Route path="order" element={<OrderAdmin />} />
+          <Route path="order/detail/:order_id" element={<Order_Detail />} />
+          <Route path="order/edit/:order_id" element={<Order_Edit />} />
         </Route>
       </Routes>
       <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }}/>

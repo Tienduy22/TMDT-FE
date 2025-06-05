@@ -1,4 +1,4 @@
-.product-admin {
+.order-admin {
     &__header {
         display: flex;
         justify-content: space-between;
@@ -15,7 +15,7 @@
     }
 }
 
-.product-grid-header {
+.order-grid-header {
     width: 100%;
     text-align: center;
     background: #f8fafc;
@@ -23,7 +23,7 @@
     padding: 12px 0;
     border-bottom: 1.5px solid rgba(180, 190, 210, 0.18);
 }
-.product-grid-row {
+.order-grid-row {
     text-align: center;
     border-bottom: 1px solid rgba(180, 190, 210, 0.10);
     padding: 12px 0;
