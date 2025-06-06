@@ -15,8 +15,10 @@ import { addOrder } from "../../Redux/reducers/orderReducer";
 import { InputNumber,Rate } from "antd";
 import { jwtDecode } from "jwt-decode";
 import * as cartService from "@/Services/cartService";
+import * as ProductService from "../../Services/productService"
 import CommentProduct from "../../Componets/Comment";
 import RecommendProducts from "../../Componets/RecommendProducts";
+import { addCart } from "../../Redux/reducers/cartUserReducer";
 
 function ProductDetail() {
     const { id } = useParams();
@@ -29,22 +31,20 @@ function ProductDetail() {
         user_id = jwtDecode(user.token).id;
     }
 
+    const ProductDetail = async() => {
+        const res = await ProductService.productDetail(id)
+        setProduct(res[0])
+    }
+
     useEffect(() => {
-        fetch(`http://localhost:3000/api/v1/admin/products/detail/${id}`)
-            .then((response) => response.json())
-            .then((data) => {
-                setProduct(data[0]);
-            })
-            .catch((error) => {
-                console.error("Error fetching data:", error);
-            });
-    }, [id]);
+        ProductDetail();
+    }, []);
 
     if (!product) {
         return <h1>Loading...</h1>;
     }
 
-    const handleClickCart = () => {
+    const handleClickCart = async () => {
         const orderItem = {
             name: product?.title,
             amount: amount,
@@ -52,6 +52,7 @@ function ProductDetail() {
             price: product?.price,
             product_id: product?._id,
         };
+        const cartItem = orderItem
         if (!user_id) {
             dispatch(
                 addOrder({
@@ -59,10 +60,12 @@ function ProductDetail() {
                 })
             );
         } else {
-            const addCart = async () => {
-                const res = cartService.cartUpdate(user_id, orderItem);
-            };
-            addCart();
+            await cartService.cartUpdate(user_id, orderItem);
+            dispatch(
+                addCart({
+                    cartItem,
+                })
+            )
         }
     };
 

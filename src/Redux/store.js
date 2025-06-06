@@ -3,6 +3,7 @@ import userReducer from "./reducers/userReducer"
 import productReducer from "./reducers/productReducer"
 import orderReducer from "./reducers/orderReducer"
 import accountReducer from "./reducers/accountReducer"
+import cartUserReducer from "./reducers/cartUserReducer"
 import {
   persistStore,
   persistReducer,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     product: productReducer,
     order: orderReducer,
     account: accountReducer,
+    cartUser: cartUserReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -29,7 +29,7 @@ function Admin() {
                     onClick={({ key }) => navigate(key)}
                     items={[
                         {
-                            key: "/admin/dashboard",
+                            key: "/admin",
                             icon: <DashboardOutlined />,
                             label: "Trang tổng quan",
                         },

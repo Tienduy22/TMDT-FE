@@ -11,6 +11,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import * as cartService from "../../Services/cartService";
+import {
+    decreaseAmountCart,
+    increaseAmountCart,
+    removeCartItem,
+} from "../../Redux/reducers/cartUserReducer";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -20,25 +25,19 @@ const Cart = () => {
     if (user.token) {
         user_id = jwtDecode(user.token).id;
     }
-    console.log(user_id);
+
+    const [order, setOrder] = useState([]);
+
+    const reduxCartItems = useSelector((state) => state.cartUser.cartItems);
     const reduxOrderItems = useSelector((state) => state.order.orderItems);
 
-    const [order, setOrder] = useState(reduxOrderItems);
-
-    const fetchOrder = async () => {
+    useEffect(() => {
         if (user_id) {
-            const res = await cartService.cartGet(user_id);
-            setOrder(res.cart.products);
+            setOrder(reduxCartItems);
         } else {
             setOrder(reduxOrderItems);
         }
-    };
-
-    useEffect(() => {
-        fetchOrder();
-    }, [user_id, reduxOrderItems]);
-
-    console.log(order);
+    }, [user_id, reduxCartItems, reduxOrderItems]);
 
     const totalPrice = order?.reduce((total, item) => {
         return total + item.price * item.amount;
@@ -48,24 +47,46 @@ const Cart = () => {
         navigate("/products");
     };
 
-    const handleIncreaseAmount = (id) => {
-        dispatch(
-            increaseAmount({
-                orderItem: {
-                    product_id: id,
-                },
-            })
-        );
+    const handleIncreaseAmount = async (id) => {
+        if (!user_id) {
+            dispatch(
+                increaseAmount({
+                    orderItem: {
+                        product_id: id,
+                    },
+                })
+            );
+        } else {
+            await cartService.cartUpdateQuantity(user_id,"increase",id)
+            dispatch(
+                increaseAmountCart({
+                    cartItem: {
+                        product_id: id,
+                    },
+                })
+            );
+        }
     };
 
-    const handleDecreaseAmount = (id) => {
-        dispatch(
-            decreaseAmount({
-                orderItem: {
-                    product_id: id,
-                },
-            })
-        );
+    const handleDecreaseAmount = async (id) => {
+        if (!user_id) {
+            dispatch(
+                decreaseAmount({
+                    orderItem: {
+                        product_id: id,
+                    },
+                })
+            );
+        } else {
+            await cartService.cartUpdateQuantity(user_id,"decrease",id)
+            dispatch(
+                decreaseAmountCart({
+                    cartItem: {
+                        product_id: id,
+                    },
+                })
+            );
+        }
     };
 
     const deleteProduct = async (user_id, productId) => {
@@ -79,7 +100,13 @@ const Cart = () => {
             );
         } else {
             await cartService.cartDelete(user_id, productId);
-            fetchOrder();
+            dispatch(
+                removeCartItem({
+                    cartItem: {
+                        product_id: productId,
+                    },
+                })
+            );
         }
     };
 
@@ -212,7 +239,7 @@ const Cart = () => {
                                 }}
                                 className="no-product"
                             >
-                                <img src="/online-shopping.png"/>
+                                <img src="/online-shopping.png" />
                                 <p>Chưa có sản phẩm nào</p>
                             </div>
                         )}

@@ -50,7 +50,13 @@ function App() {
     const token_admin = Cookies.get("token");
 
     useEffect(() => {
-        if (!token_admin) {
+        const isOnAdminRoute = window.location.pathname.startsWith("/admin");
+
+        if (
+            !token_admin &&
+            isOnAdminRoute &&
+            window.location.pathname !== "/admin/login"
+        ) {
             navigate("/admin/login");
         }
     }, [token_admin, navigate]);
@@ -127,7 +133,7 @@ function App() {
                 {/*---------- Router Admin ---------- */}
                 {token_admin ? (
                     <Route path="/admin" element={<Admin />}>
-                         <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route index element={<AdminDashboard />} />
                         <Route path="product" element={<ProductAdmin />} />
                         <Route
                             path="product/detail/:product_id"

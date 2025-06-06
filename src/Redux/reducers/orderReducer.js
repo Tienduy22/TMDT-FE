@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     orderItems : [],
-    shippingAddress : [],
     paymentMethod:'',
     itemsPrice: 0,
     amount:0,
@@ -20,6 +19,10 @@ export const orderSlice = createSlice({
     name: 'order',
     initialState,
     reducers: {
+        deleteAllOrder: (state, action) => {
+            state.orderItems = [];
+        },
+
         addOrder: (state, action) => {
             const {orderItem} = action.payload
             const itemOrder = state?.orderItems?.find((item) => item?.product_id === orderItem.product_id)
@@ -53,6 +56,6 @@ export const orderSlice = createSlice({
     }
 })
 
-export const {addOrder, increaseAmount, decreaseAmount, removeOrder} = orderSlice.actions
+export const {deleteAllOrder, addOrder, increaseAmount, decreaseAmount, removeOrder} = orderSlice.actions
 
 export default orderSlice.reducer

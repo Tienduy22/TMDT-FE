@@ -24,6 +24,8 @@ export const userSlice = createSlice({
             state.fullName = ""
             state.email = ""
             state.token = ""
+            state.address = ""
+            state.phone = ""
         }
     }
 })

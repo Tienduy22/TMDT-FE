@@ -59,6 +59,7 @@ function Header() {
         await UserService.LogoutUser();
         localStorage.clear("token");
         dispatch(remoteUser());
+        navigate("/")
     };
 
     const handleProfile = () => {

@@ -9,6 +9,13 @@ export const OrderGet = async () => {
     return res.data;
 };
 
+export const CashOnDelivery = async (data) => {
+    const res = await axios.post(
+        `${API}/client/order/cash-on-delivery`,data
+    );
+    return res.data;
+};
+
 export const OrderDetail = async (order_id) => {
     const res = await axios.get(
         `${API}/client/order/detail/${order_id}`
