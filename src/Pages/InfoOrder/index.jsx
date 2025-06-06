@@ -204,6 +204,7 @@ const InfoOrder = () => {
                                             product: order.orderItems,
                                             totalPrice: totalPrice,
                                             payment: payment,
+                                            status: "waiting"
                                         }),
                                     }
                                 )
