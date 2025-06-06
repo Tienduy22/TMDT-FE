@@ -2,6 +2,7 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit"
 import userReducer from "./reducers/userReducer"
 import productReducer from "./reducers/productReducer"
 import orderReducer from "./reducers/orderReducer"
+import accountReducer from "./reducers/accountReducer"
 import {
   persistStore,
   persistReducer,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
     user: userReducer,
     product: productReducer,
     order: orderReducer,
+    account: accountReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

@@ -30,7 +30,8 @@ function Account_Detail() {
                 name: account?.fullName,
                 phone: account?.phone,
                 email: account?.email,
-                role: account?.role_name
+                role: account?.role_name,
+                password: account?.password
             }}
         >
             <Form.Item label="Tên tài khoản" name="name" >
@@ -40,6 +41,9 @@ function Account_Detail() {
                 <Input disabled />
             </Form.Item>
             <Form.Item label="Email" name="email" >
+                <Input disabled />
+            </Form.Item>
+            <Form.Item label="Mật khẩu" name="password" >
                 <Input disabled />
             </Form.Item>
             <Form.Item label="Quyền" name="role" >

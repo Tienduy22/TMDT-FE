@@ -7,116 +7,96 @@ import {
     DeleteOutlined,
     EyeOutlined,
 } from "@ant-design/icons";
-import "./AccountAdmin.scss";
-import * as AccountService from "../../../../Services/accountService";
+import "./RoleAdmin.scss";
+import * as RoleService from "../../../../Services/roleService";
 import { useNavigate } from "react-router-dom";
 import { TakePermissions } from "../../../../Componets/TakePermissions";
 
-function AccountAdmin() {
-    const [accounts, setAccounts] = useState([]);
+function RoleAdmin() {
+    const [roles, setRole] = useState([]);
     const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const permissions = TakePermissions();
 
     useEffect(() => {
-        const AccountsGet = async () => {
-            const res = await AccountService.AccountGet();
-            setAccounts(res);
-            setLoading(false);
+        const roleGet = async () => {
+            const res = await RoleService.RoleGet();
+            setRole(res.roles);
         };
-        AccountsGet();
+        roleGet();
     }, []);
 
     const handleDelete = async (id) => {
-        const res = await AccountService.AccountDelete(id);
+        const res = await RoleService.RoleDelete(id);
         if (res.code === 200) {
-            setAccounts((prevAccount) =>
-                prevAccount.filter((account) => account._id !== id)
-            );
-            message.success("Xóa tài khoản thành công!");
+            setRole((prevRole) => prevRole.filter((role) => role._id !== id));
+            message.success("Xóa thành công!");
         } else {
-            message.error("Xóa tài khoản thất bại!");
+            message.error("Xóa thất bại!");
         }
     };
 
-    if (loading) {
-        return <div>Đang tải...</div>;
-    }
-
     return (
-        <div className="account-admin">
-            {permissions.includes("account_view") ? (
+        <div className="role-admin">
+            {permissions.includes("role_view") ? (
                 <>
-                    <div className="account-admin__header">
-                        <h2>Quản lý tài khoản</h2>
+                    <div className="role-admin__header">
+                        <h2>Quản lý quyền</h2>
                         <Button
                             type="primary"
                             icon={<PlusOutlined />}
-                            onClick={() => navigate("/admin/account/create")}
+                            onClick={() => navigate("/admin/role/create")}
                         >
-                            Thêm sản phẩm
+                            Thêm quyền
                         </Button>
                     </div>
-                    <div className="account-admin__search">
+                    <div className="role-admin__search">
                         <Input
-                            placeholder="Tìm kiếm tài khoản..."
+                            placeholder="Tìm kiếm quyền..."
                             prefix={<SearchOutlined />}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             style={{ width: 300 }}
                         />
                     </div>
-                    <div className="account-grid">
+                    <div className="role-grid">
                         {/* Header */}
-                        <Row className="account-grid-header" gutter={0}>
-                            <Col span={2}>
+                        <Row className="role-grid-header" gutter={0}>
+                            <Col span={5}>
                                 <b>STT</b>
                             </Col>
-                            <Col span={4}>
-                                <b>Tên tài khoản</b>
+                            <Col span={8}>
+                                <b>Tên</b>
                             </Col>
-                            <Col span={4}>
-                                <b>Email</b>
-                            </Col>
-                            <Col span={4}>
-                                <b>Điện thoại</b>
-                            </Col>
-                            <Col span={4}>
-                                <b>Quyền</b>
-                            </Col>
-                            <Col span={6}>
+                            <Col span={11}>
                                 <b>Hành động</b>
                             </Col>
                         </Row>
 
-                        {accounts.length === 0 ? (
+                        {roles.length === 0 ? (
                             <Row
-                                className="account-grid-row"
+                                className="role-grid-row"
                                 style={{ textAlign: "center" }}
                             >
-                                <Col span={24}>Không có tài khoản.</Col>
+                                <Col span={24}>Không có quyền.</Col>
                             </Row>
                         ) : (
-                            accounts.map((item, index) => (
+                            roles.map((item, index) => (
                                 <Row
-                                    className="account-grid-row"
+                                    className="role-grid-row"
                                     key={item.key}
                                     gutter={0}
                                     align="middle"
                                 >
-                                    <Col span={2}>{(index += 1)}</Col>
-                                    <Col span={4}>{item.fullName}</Col>
-                                    <Col span={4}>{item.email}</Col>
-                                    <Col span={4}>{item.phone}</Col>
-                                    <Col span={4}>{item.role_name}</Col>
-                                    <Col span={6}>
+                                    <Col span={5}>{(index += 1)}</Col>
+                                    <Col span={8}>{item.title}</Col>
+                                    <Col span={11}>
                                         <Button
                                             icon={<EyeOutlined />}
                                             size="small"
                                             onClick={() =>
                                                 navigate(
-                                                    `/admin/account/detail/${item._id}`
+                                                    `/admin/role/detail/${item._id}`
                                                 )
                                             }
                                             style={{ marginRight: 4 }}
@@ -128,7 +108,7 @@ function AccountAdmin() {
                                             size="small"
                                             onClick={() =>
                                                 navigate(
-                                                    `/admin/account/edit/${item._id}`
+                                                    `/admin/role/edit/${item._id}`
                                                 )
                                             }
                                             style={{ marginRight: 4 }}
@@ -152,10 +132,12 @@ function AccountAdmin() {
                     </div>
                 </>
             ) : (
-                <><p>Không có quyền hạn</p></>
+                <>
+                    <p>Không có quyền hạn</p>
+                </>
             )}
         </div>
     );
 }
 
-export default AccountAdmin;
+export default RoleAdmin;

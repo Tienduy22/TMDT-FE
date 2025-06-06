@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { updateUser } from "./Redux/reducers/userReducer";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -36,94 +36,174 @@ import AccountAdmin from "./Pages/Admin/Account_Admin/Main";
 import Account_Detail from "./Pages/Admin/Account_Admin/Detail";
 import Account_Edit from "./Pages/Admin/Account_Admin/Edit";
 import Account_Create from "./Pages/Admin/Account_Admin/Create";
-
+import RoleAdmin from "./Pages/Admin/Role_Admin/Main";
+import Role_Detail from "./Pages/Admin/Role_Admin/Detail";
+import Role_Edit from "./Pages/Admin/Role_Admin/Edit";
+import Role_Create from "./Pages/Admin/Role_Admin/Create";
+import Login_Admin from "./Pages/Admin/Login_Admin";
+import Cookies from "js-cookie";
+import AdminDashboard from "./Pages/Admin/Dashboard";
 
 function App() {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    let storageData = localStorage.getItem("token")
-    if(storageData){
-      storageData = JSON.parse(storageData)
-      const decode = jwtDecode(storageData);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const token_admin = Cookies.get("token");
 
-      if(decode?.id){
-        handleGetDetailUser(decode?.id, storageData)
-      }
-    }
-  },[])
+    useEffect(() => {
+        if (!token_admin) {
+            navigate("/admin/login");
+        }
+    }, [token_admin, navigate]);
 
-  // Axios Interceptor để xử lý hết hạn token và làm mới token
-  UserService.axiosJWT.interceptors.request.use(
-    async (config) => {
-      // Lấy thời gian hiện tại
-      const currentTime = new Date();
+    useEffect(() => {
+        let storageData = localStorage.getItem("token");
 
-      // Giải mã token để lấy thông tin về thời gian hết hạn
-      let storageData = localStorage.getItem("token")
-      storageData = JSON.parse(storageData)
-      const decode = jwtDecode(storageData);
+        if (storageData) {
+            storageData = JSON.parse(storageData);
+            const decode = jwtDecode(storageData);
+            if (decode?.id) {
+                handleGetDetailUser(decode?.id, storageData);
+            }
+        }
+    }, []);
 
+    // Axios Interceptor để xử lý hết hạn token và làm mới token
+    UserService.axiosJWT.interceptors.request.use(
+        async (config) => {
+            // Lấy thời gian hiện tại
+            const currentTime = new Date();
 
-      // Kiểm tra xem token có hết hạn không
-      if (decode.exp < currentTime.getTime() / 1000) {
-        // Nếu token hết hạn, làm mới token
-        const data = await UserService.RefreshToken();
+            // Giải mã token để lấy thông tin về thời gian hết hạn
+            let storageData = localStorage.getItem("token");
+            storageData = JSON.parse(storageData);
+            const decode = jwtDecode(storageData);
 
-        // Cập nhật header của yêu cầu với token mới
-        config.headers['Authorization'] = `Bearer ${data?.token}`;
-      }
+            // Kiểm tra xem token có hết hạn không
+            if (decode.exp < currentTime.getTime() / 1000) {
+                // Nếu token hết hạn, làm mới token
+                const data = await UserService.RefreshToken();
 
-      // Trả về config đã cập nhật
-      return config;
-    },
-    (err) => {
-      return Promise.reject(err);
-    }
-  );
+                // Cập nhật header của yêu cầu với token mới
+                config.headers["Authorization"] = `Bearer ${data?.token}`;
+            }
 
-  const handleGetDetailUser = async (id,token) => {
-    const res = await UserService.ProfileUser(id,token)
-    dispatch(updateUser({...res,token: token}))
-  }
-  return (
-    <>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="products" element={<Product />} />
-          <Route path="products/detail/:id" element={<ProductDetail />} />
-          <Route path="products/:slug" element={<ProductCategory />} />
-          <Route path="about" element={<AboutPage />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="info_order" element={<InfoOrder />} />
-          <Route path="success-order" element={<SuccessOrder />} />
-        </Route>
-        <Route path="/login" element={<Login/>} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={<Admin />}>
-          <Route path="product" element={<ProductAdmin />} />
-          <Route path="product/detail/:product_id" element={<Product_Detail />} />
-          <Route path="product/edit/:product_id" element={<Product_Edit />} />
-          <Route path="product/create" element={<Product_Create />} />
-          <Route path="category" element={<CategoryAdmin />} />
-          <Route path="category/detail/:category_id" element={<Category_Detail />} />
-          <Route path="category/create" element={<Category_Create />} />
-          <Route path="category/edit/:category_id" element={<Category_Edit />} />
-          <Route path="order" element={<OrderAdmin />} />
-          <Route path="order/detail/:order_id" element={<Order_Detail />} />
-          <Route path="order/edit/:order_id" element={<Order_Edit />} />
-          <Route path="customer" element={<UserAdmin />} />
-          <Route path="customer/detail/:user_id" element={<User_Detail />} />
-          <Route path="account" element={<AccountAdmin />} />
-          <Route path="account/detail/:account_id" element={<Account_Detail />} />
-          <Route path="account/edit/:account_id" element={<Account_Edit />} />
-          <Route path="account/create" element={<Account_Create />} />
-        </Route>
-      </Routes>
-      <PayPalScriptProvider options={{ "client-id": "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR" }}/>
-    </>
-  );
+            // Trả về config đã cập nhật
+            return config;
+        },
+        (err) => {
+            return Promise.reject(err);
+        }
+    );
+
+    const handleGetDetailUser = async (id, token) => {
+        const res = await UserService.ProfileUser(id, token);
+        dispatch(updateUser({ ...res, token: token }));
+    };
+
+    return (
+        <>
+            <Routes>
+                {/*---------- Router Page ---------- */}
+                <Route path="/" element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path="products" element={<Product />} />
+                    <Route
+                        path="products/detail/:id"
+                        element={<ProductDetail />}
+                    />
+                    <Route
+                        path="products/:slug"
+                        element={<ProductCategory />}
+                    />
+                    <Route path="about" element={<AboutPage />} />
+                    <Route path="profile" element={<Profile />} />
+                    <Route path="cart" element={<Cart />} />
+                    <Route path="info_order" element={<InfoOrder />} />
+                    <Route path="success-order" element={<SuccessOrder />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/*---------- Router Admin ---------- */}
+                {token_admin ? (
+                    <Route path="/admin" element={<Admin />}>
+                         <Route path="dashboard" element={<AdminDashboard />} />
+                        <Route path="product" element={<ProductAdmin />} />
+                        <Route
+                            path="product/detail/:product_id"
+                            element={<Product_Detail />}
+                        />
+                        <Route
+                            path="product/edit/:product_id"
+                            element={<Product_Edit />}
+                        />
+                        <Route
+                            path="product/create"
+                            element={<Product_Create />}
+                        />
+                        <Route path="category" element={<CategoryAdmin />} />
+                        <Route
+                            path="category/detail/:category_id"
+                            element={<Category_Detail />}
+                        />
+                        <Route
+                            path="category/create"
+                            element={<Category_Create />}
+                        />
+                        <Route
+                            path="category/edit/:category_id"
+                            element={<Category_Edit />}
+                        />
+                        <Route path="order" element={<OrderAdmin />} />
+                        <Route
+                            path="order/detail/:order_id"
+                            element={<Order_Detail />}
+                        />
+                        <Route
+                            path="order/edit/:order_id"
+                            element={<Order_Edit />}
+                        />
+                        <Route path="customer" element={<UserAdmin />} />
+                        <Route
+                            path="customer/detail/:user_id"
+                            element={<User_Detail />}
+                        />
+                        <Route path="account" element={<AccountAdmin />} />
+                        <Route
+                            path="account/detail/:account_id"
+                            element={<Account_Detail />}
+                        />
+                        <Route
+                            path="account/edit/:account_id"
+                            element={<Account_Edit />}
+                        />
+                        <Route
+                            path="account/create"
+                            element={<Account_Create />}
+                        />
+                        <Route path="role" element={<RoleAdmin />} />
+                        <Route
+                            path="role/detail/:role_id"
+                            element={<Role_Detail />}
+                        />
+                        <Route
+                            path="role/edit/:role_id"
+                            element={<Role_Edit />}
+                        />
+                        <Route path="role/create" element={<Role_Create />} />
+                    </Route>
+                ) : null}
+
+                <Route path="/admin/login" element={<Login_Admin />} />
+            </Routes>
+            <PayPalScriptProvider
+                options={{
+                    "client-id":
+                        "AXcxRtCTNBAhaQdlmnuaZXwi-iybebir8vEfFwuh4793SZRoWFVmV365W173xNyEVog0ArOK8HJN1EUR",
+                }}
+            />
+        </>
+    );
 }
 
 export default App;

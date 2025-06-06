@@ -6,6 +6,8 @@ import {
     UsergroupAddOutlined,
     ShoppingCartOutlined,
     SettingOutlined,
+    UserAddOutlined,
+    UnorderedListOutlined
 } from "@ant-design/icons";
 import { Outlet, useNavigate } from "react-router-dom";
 import "./AdminLayout.scss";
@@ -33,7 +35,7 @@ function Admin() {
                         },
                         {
                             key: "/admin/category",
-                            icon: <ShoppingOutlined />,
+                            icon: <UnorderedListOutlined />,
                             label: "Quản lý danh mục sản phẩm",
                         },
                         {
@@ -53,18 +55,13 @@ function Admin() {
                         },
                         {
                             key: "/admin/account",
-                            icon: <SettingOutlined />,
+                            icon: <UserAddOutlined />,
                             label: "Quản lý tài khoản hệ thống",
                         },
                         {
                             key: "/admin/role",
                             icon: <SettingOutlined />,
                             label: "Quản lý nhóm quyền",
-                        },
-                        {
-                            key: "/admin/role-action",
-                            icon: <SettingOutlined />,
-                            label: "Phân quyền",
                         },
                     ]}
                 />

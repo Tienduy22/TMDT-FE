@@ -42,7 +42,8 @@ function Account_Create() {
                 fullName: "",
                 phone: "",
                 email: "",
-                role_id: ""
+                role_id: "",
+                password: ""
             }}
             onFinish={handleSubmit}
         >
@@ -53,6 +54,9 @@ function Account_Create() {
                 <Input  />
             </Form.Item>
             <Form.Item label="Email" name="email" >
+                <Input  />
+            </Form.Item>
+            <Form.Item label="Mật khẩu" name="password" >
                 <Input  />
             </Form.Item>
             <Form.Item label="Quyền" name="role_id" >

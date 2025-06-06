@@ -28,3 +28,12 @@ export const AccountDelete = async(account_id) => {
     const res = await axios.delete(`${API}/admin/accounts/delete/${account_id}`)
     return res.data
 }
+
+export const AccountLogin = async(data) => {
+    const res = await axios.post(`${API}/admin/accounts/login`,data,
+        {
+            withCredentials: true
+        }
+    )
+    return res.data
+}
