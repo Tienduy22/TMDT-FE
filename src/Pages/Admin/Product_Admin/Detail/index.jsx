@@ -52,7 +52,7 @@ function Product_Detail() {
                 stock: product?.stock || 0,
                 image: product?.thumbnail || [],
                 position: product?.position || "",
-                featured: product?.featured || false,
+                featured: product?.featured || "0",
                 active: product?.active || true,
             }}
         >
@@ -123,8 +123,8 @@ function Product_Detail() {
             {/* Nổi bật */}
             <Form.Item label="Nổi bật" name="featured">
                 <Radio.Group>
-                    <Radio value={true}>Nổi bật</Radio>
-                    <Radio value={false}>Không</Radio>
+                    <Radio value={"1"}>Nổi bật</Radio>
+                    <Radio value={"0"}>Không</Radio>
                 </Radio.Group>
             </Form.Item>
 

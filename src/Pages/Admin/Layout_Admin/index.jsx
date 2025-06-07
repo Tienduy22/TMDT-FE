@@ -4,6 +4,7 @@ import {
     DashboardOutlined,
     ShoppingOutlined,
     UsergroupAddOutlined,
+    DoubleLeftOutlined,
     ShoppingCartOutlined,
     SettingOutlined,
     UserAddOutlined,
@@ -47,6 +48,11 @@ function Admin() {
                             key: "/admin/order",
                             icon: <ShoppingCartOutlined />,
                             label: "Quản lý đơn hàng",
+                        },
+                        {
+                            key: "/admin/refund",
+                            icon: <DoubleLeftOutlined />,
+                            label: "Quản lý đổi trả",
                         },
                         {
                             key: "/admin/customer",

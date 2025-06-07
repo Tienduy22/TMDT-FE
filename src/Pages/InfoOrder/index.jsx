@@ -9,6 +9,7 @@ import { deleteAllCart } from "../../Redux/reducers/cartUserReducer";
 import { deleteAllOrder } from "../../Redux/reducers/orderReducer";
 import * as CartService from "../../Services/cartService";
 import * as OrderService from "../../Services/orderService";
+import * as ProductService from "../../Services/productService";
 const { TextArea } = Input;
 
 const InfoOrder = () => {
@@ -73,6 +74,8 @@ const InfoOrder = () => {
         };
         const res = await OrderService.CashOnDelivery(data)
         if (res.code === 200) {
+            await ProductService.updateStock(itemOrder)
+            dispatch(deleteAllOrder());
             navigate("/success-order");
         }
     };

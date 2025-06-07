@@ -43,6 +43,10 @@ import Role_Create from "./Pages/Admin/Role_Admin/Create";
 import Login_Admin from "./Pages/Admin/Login_Admin";
 import Cookies from "js-cookie";
 import AdminDashboard from "./Pages/Admin/Dashboard";
+import ReturnProductPage from "./Pages/Refund";
+import RefundAdmin from "./Pages/Admin/Refund_Admin/Main";
+import Refund_Detail from "./Pages/Admin/Refund_Admin/Detail";
+import Refund_Edit from "./Pages/Admin/Refund_Admin/Edit";
 
 function App() {
     const dispatch = useDispatch();
@@ -122,6 +126,7 @@ function App() {
                         element={<ProductCategory />}
                     />
                     <Route path="about" element={<AboutPage />} />
+                    <Route path="refund" element={<ReturnProductPage />} />
                     <Route path="profile" element={<Profile />} />
                     <Route path="cart" element={<Cart />} />
                     <Route path="info_order" element={<InfoOrder />} />
@@ -197,6 +202,9 @@ function App() {
                             element={<Role_Edit />}
                         />
                         <Route path="role/create" element={<Role_Create />} />
+                        <Route path="refund" element={<RefundAdmin />} />
+                        <Route path="refund/detail/:refund_id" element={<Refund_Detail />} />
+                        <Route path="refund/edit/:refund_id" element={<Refund_Edit />} />
                     </Route>
                 ) : null}
 

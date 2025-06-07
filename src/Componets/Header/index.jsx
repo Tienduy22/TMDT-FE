@@ -79,7 +79,7 @@ function Header() {
         <div className="header">
             <Row>
                 <Col span={4} className="logo">
-                    PANDORA
+                    Luxury Jewelry
                 </Col>
                 <Col span={8} className="search-bar" ref={searchRef}>
                     <Search
@@ -108,6 +108,7 @@ function Header() {
                     <a href="/">Trang chủ</a>
                     <a href="/products">Sản phẩm</a>
                     <a href="/about">Về chúng tôi</a>
+                    <a href="/refund">Hoàn trả</a>
                     <Avatar size="large" icon={<UserOutlined />} />
                     {user?.fullName ? (
                         <div className="account-logout">

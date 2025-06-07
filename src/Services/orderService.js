@@ -23,6 +23,13 @@ export const OrderDetail = async (order_id) => {
     return res.data;
 };
 
+export const OrderRefund = async (email,phone,purchaseDate) => {
+    const res = await axios.get(
+        `${API}/client/order/refund?email=${email}&phone=${phone}&purchaseDate=${purchaseDate}`
+    );
+    return res.data;
+};
+
 export const OrderEdit = async (order_id,data) => {
     const res = await axios.patch(
         `${API}/client/order/edit/${order_id}`,data

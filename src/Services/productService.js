@@ -30,6 +30,13 @@ export const countProduct = async (category_id) => {
     return res.data;
 };
 
+export const updateStock = async (data) => {
+    const res = await axios.patch(
+        `${API}/admin/products/stock`,data
+    );
+    return res.data;
+};
+
 export const paginationGet = async (page) => {
     let res = {};
     if (page) {
@@ -61,6 +68,11 @@ export const productCreate = async (data) => {
 
 export const productDetail = async (id) => {
     const res = await axios.get(`${API}/admin/products/detail/${id}`);
+    return res.data;
+};
+
+export const productPopular = async () => {
+    const res = await axios.get(`${API}/admin/products/popular`);
     return res.data;
 };
 

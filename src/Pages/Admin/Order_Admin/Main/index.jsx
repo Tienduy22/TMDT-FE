@@ -95,7 +95,7 @@ function OrderAdmin() {
                                     <Col span={2}>{(index += 1)}</Col>
                                     <Col span={5}>{item.infoUser?.name}</Col>
                                     <Col span={3}>
-                                        {item.totalPrice.toLocaleString()} đ
+                                        {item.totalPrice} đ
                                     </Col>
                                     <Col span={4}>
                                         {new Date(
