@@ -40,7 +40,7 @@ function ProductDetail() {
 
     useEffect(() => {
         ProductDetail();
-    }, []);
+    }, [id]);
 
     if (!product) {
         return <h1>Loading...</h1>;
@@ -123,7 +123,7 @@ function ProductDetail() {
                         <Col span={12} className="product-info">
                             <p className="title">{product.title}</p>
                             <div className="rate">
-                                <Rate defaultValue={product.rate_total} />
+                                <Rate defaultValue={product.rate_total} disabled/>
                             </div>
                             <p className="price">
                                 {product.price.toLocaleString()} đ
@@ -194,7 +194,7 @@ function ProductDetail() {
                         <CommentProduct id={id} product={product} />
                     </Row>
                     <Row>
-                        <RecommendProducts product_id={product._id} />
+                        <RecommendProducts product_id={id} />
                     </Row>
                 </Col>
                 <Col span={2}></Col>

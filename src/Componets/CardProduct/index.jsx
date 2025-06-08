@@ -47,6 +47,7 @@ const CardProducts = (props) => {
                     <Rate 
                         defaultValue={rate} 
                         style={{ fontSize: '14px' }}
+                        disabled
                     />
                 </div>
                 

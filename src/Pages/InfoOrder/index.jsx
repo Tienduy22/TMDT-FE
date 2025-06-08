@@ -1,6 +1,7 @@
 import "./InfoOrder.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, Button, Input, Radio } from "antd";
+import { Form, message } from "antd";
 import { useEffect, useState } from "react";
 import { PayPalButton } from "react-paypal-button-v2";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +11,7 @@ import { deleteAllOrder } from "../../Redux/reducers/orderReducer";
 import * as CartService from "../../Services/cartService";
 import * as OrderService from "../../Services/orderService";
 import * as ProductService from "../../Services/productService";
-import * as ActionUserService from "../../Services/actionUserService"
+import * as ActionUserService from "../../Services/actionUserService";
 const { TextArea } = Input;
 
 const InfoOrder = () => {
@@ -27,6 +28,8 @@ const InfoOrder = () => {
     const [payment, setPayment] = useState();
     const [itemOrder, setItemOrder] = useState([]);
     const [userId, setUserId] = useState(""); // Sử dụng state để quản lý userId
+    const [isLoading, setIsLoading] = useState(false);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         if (user.token) {
@@ -44,17 +47,7 @@ const InfoOrder = () => {
             0
         ) || 0;
 
-    const style = {
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-    };
 
-    const handleName = (e) => setName(e.target.value);
-    const handleAddress = (e) => setAddress(e.target.value);
-    const handlePhone = (e) => setPhone(e.target.value);
-    const handleEmail = (e) => setEmail(e.target.value);
-    const handleNote = (e) => setNote(e.target.value);
     const handlePayment = (e) => {
         setPayment(e.target.value);
     };
@@ -64,247 +57,384 @@ const InfoOrder = () => {
         product_id: itemOrder,
         action_type: "purchase",
     };
+
+
     const hanldeSubmit = async () => {
-        const data = {
-            userId,
-            infoUser: {
-                name,
-                address,
-                phone,
-                email,
-                note,
-            },
-            product: itemOrder,
-            totalPrice,
-            payment,
-            status: "waiting",
-        };
-        const res = await OrderService.CashOnDelivery(data);
-        if (res.code === 200) {
-            await ActionUserService.UserAction(data)
-            await ProductService.updateStock(itemOrder);
-            dispatch(deleteAllOrder());
-            navigate("/success-order");
+        const infoUser = form.getFieldsValue();
+        setIsLoading(true);
+        try {
+            const data = {
+                userId,
+                infoUser,
+                product: itemOrder,
+                totalPrice,
+                payment,
+                status: "waiting",
+            };
+            const res = await OrderService.CashOnDelivery(data);
+            if (res.code === 200) {
+                await ActionUserService.UserAction(data);
+                await ProductService.updateStock(itemOrder);
+                dispatch(deleteAllOrder());
+                navigate("/success-order");
+            }
+        } catch (error) {
+            console.error("Order submission failed:", error);
+            message.error("Vui lòng nhập đủ thông tin");
+        } finally {
+            setIsLoading(false);
         }
     };
-    const handleNavigateSuccessOrder = async () => {
-        await ActionUserService.UserAction(data)
-        if (user.fullName) {
-            await CartService.cartDeleteItem(userId);
-            dispatch(deleteAllCart());
-        } else {
-            dispatch(deleteAllOrder());
-        }
 
-        navigate("/success-order");
+    const handleNavigateSuccessOrder = async () => {
+        setIsLoading(true);
+        try {
+            await ActionUserService.UserAction(data);
+            if (user.fullName) {
+                await CartService.cartDeleteItem(userId);
+                dispatch(deleteAllCart());
+            } else {
+                dispatch(deleteAllOrder());
+            }
+            navigate("/success-order");
+        } catch (error) {
+            console.error("Navigation failed:", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
-        <Row
-            gutter={[5, 5]}
-            className="container-infoOrder"
-            style={{ fontFamily: "Roboto" }}
-        >
-            <Col span={14} style={{ paddingRight: 40, fontSize: 18 }}>
-                <div className="info">
-                    <p className="title">Thông tin thanh toán</p>
-                    <div className="info-text">
-                        <p>Họ và Tên:</p>
-                        <Input
-                            placeholder="Họ và tên ..."
-                            defaultValue={user.fullName}
-                            onChange={handleName}
-                        />
-                    </div>
-                    <div className="info-text">
-                        <p>Địa chỉ:</p>
-                        <Input
-                            placeholder="Địa chỉ ..."
-                            defaultValue={user.address}
-                            onChange={handleAddress}
-                        />
-                    </div>
-                    <div className="info-text">
-                        <p>Số điện thoại:</p>
-                        <Input
-                            placeholder="Số điện thoại ..."
-                            defaultValue={user.phone}
-                            onChange={handlePhone}
-                        />
-                    </div>
-                    <div className="info-text">
-                        <p>Email:</p>
-                        <Input
-                            placeholder="Email ..."
-                            defaultValue={user.email}
-                            onChange={handleEmail}
-                        />
-                    </div>
-                    <div className="info-text">
-                        <p>Thông tin bổ sung:</p>
-                        <TextArea
-                            placeholder="Ghi chú về đơn hàng, ví dụ: thời gian hay chỉ dẫn địa điểm giao hàng chi tiết hơn..."
-                            autoSize={{ minRows: 3, maxRows: 5 }}
-                            onChange={handleNote}
-                        />
-                    </div>
-                </div>
-            </Col>
-            <Col
-                span={10}
-                className="order"
-                style={{ fontSize: 24, paddingLeft: 40, paddingRight: 40 }}
-            >
-                <p className="title-order">Đơn hàng của bạn</p>
-                <Row gutter={[10, 10]} className="order1">
-                    <Col span={18}>
-                        <p className="order1-text1">SẢN PHẨM</p>
-                    </Col>
-                    <Col span={6} style={{ textAlign: "right" }}>
-                        <p className="order1-text2">TẠM TÍNH</p>
-                    </Col>
-                </Row>
-                {itemOrder.map((item) => (
-                    <Row
-                        gutter={[10, 10]}
-                        style={{
-                            paddingBottom: 10,
-                            opacity: 0.6,
-                            paddingTop: 10,
-                        }}
+        <div className="order-info-wrapper">
+            <Row gutter={[24, 24]}>
+                {/* Payment Information Section */}
+                <Col xs={24} lg={13}>
+                    <div
+                        className={`payment-details-section ${
+                            isLoading ? "order-loading-state" : ""
+                        }`}
                     >
-                        <Col span={18}>
-                            {item.name} x {item.amount}
-                        </Col>
-                        <Col span={6} style={{ textAlign: "right" }}>
-                            {(item.price * item.amount).toLocaleString()} đ
-                        </Col>
-                    </Row>
-                ))}
-                <Row gutter={[10, 10]} className="order2">
-                    <Col
-                        span={18}
-                        style={{ fontFamily: "Roboto", fontSize: 18 }}
-                    >
-                        Tổng
-                    </Col>
-                    <Col
-                        span={6}
-                        style={{
-                            textAlign: "right",
-                            fontFamily: "Roboto",
-                            fontSize: 18,
-                            color: "#c02b2b",
-                        }}
-                    >
-                        {totalPrice.toLocaleString()}đ
-                    </Col>
-                </Row>
-                <div className="payment">
-                    <p>Phương thức thanh toán</p>
-                    <div className="payment-option">
-                        <Radio.Group
-                            style={style}
-                            onChange={handlePayment}
-                            options={[
-                                {
-                                    value: "cash-on-delivery",
-                                    label: "Thanh toán khi nhận hàng",
-                                },
-                                { value: "paypal", label: "Thanh toán PAYPAL" },
-                                { value: "vnpay", label: "Thanh toán VNPAY" },
-                            ]}
-                        />
-                    </div>
-                </div>
-                {payment === "paypal" ? (
-                    <PayPalButton
-                        amount={(totalPrice / 25000).toFixed(2)} // Quy đổi sang USD
-                        shippingPreference="NO_SHIPPING"
-                        options={{
-                            clientId: "YOUR_PAYPAL_CLIENT_ID", // Thay bằng clientId thực tế
-                            currency: "USD",
-                        }}
-                        createOrder={(data, actions) => {
-                            return actions.order.create({
-                                purchase_units: [
-                                    {
-                                        amount: {
-                                            value: (totalPrice / 25000).toFixed(
-                                                2
-                                            ),
+                        <h2 className="payment-section-heading">
+                            Thông tin thanh toán
+                        </h2>
+
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={hanldeSubmit}
+                            autoComplete="off"
+                        >
+                            <div className="order-form-group">
+                                <Form.Item
+                                    label="Họ và Tên *"
+                                    name="name"
+                                    initialValue={user.fullName}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập họ và tên",
                                         },
-                                    },
-                                ],
-                            });
-                        }}
-                        onApprove={(data, actions) => {
-                            return actions.order.capture().then((details) => {
-                                console.log(
-                                    "Transaction completed by ",
-                                    details.payer.name.given_name
-                                );
-                                console.log(
-                                    "Payer ID:",
-                                    details.payer.payer_id
-                                );
-                                return fetch(
-                                    "http://localhost:3000/api/v1/client/order/paypal-transaction-complete",
-                                    {
-                                        method: "post",
-                                        headers: {
-                                            "Content-Type": "application/json",
+                                    ]}
+                                >
+                                    <Input
+                                        className="order-form-input"
+                                        placeholder="Nhập họ và tên của bạn..."
+                                        size="large"
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="order-form-group">
+                                <Form.Item
+                                    label="Địa chỉ giao hàng *"
+                                    name="address"
+                                    initialValue={user.address}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Vui lòng nhập địa chỉ giao hàng",
                                         },
-                                        body: JSON.stringify({
-                                            orderID: data.orderID,
-                                            userId,
-                                            infoUser: {
-                                                name,
-                                                address,
-                                                phone,
-                                                email,
-                                                note,
-                                            },
-                                            product: itemOrder,
-                                            totalPrice,
-                                            payment,
-                                            status: "waiting",
-                                        }),
-                                    }
-                                )
-                                    .then((response) => response.json())
-                                    .then((data) => {
-                                        if (data.code === 200) {
-                                            handleNavigateSuccessOrder();
-                                        } else {
-                                            console.log(
-                                                "Transaction failed:",
-                                                data
-                                            );
-                                        }
-                                    })
-                                    .catch((error) =>
-                                        console.error(
-                                            "Error processing transaction:",
-                                            error
-                                        )
-                                    );
-                            });
-                        }}
-                        onError={(err) => {
-                            console.error("Payment Error:", err);
-                            alert(
-                                "An error occurred with PayPal. Please try again."
-                            );
-                        }}
-                    />
-                ) : (
-                    <Button className="btn-buy" onClick={hanldeSubmit}>
-                        Đặt hàng ngay
-                    </Button>
-                )}
-            </Col>
-        </Row>
+                                    ]}
+                                >
+                                    <Input
+                                        className="order-form-input"
+                                        placeholder="Nhập địa chỉ chi tiết..."
+                                        size="large"
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="order-form-group">
+                                <Form.Item
+                                    label="Số điện thoại *"
+                                    name="phone"
+                                    initialValue={user.phone}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Vui lòng nhập số điện thoại",
+                                        },
+                                        {
+                                            pattern: /^[0-9]{9,11}$/,
+                                            message:
+                                                "Số điện thoại không hợp lệ (9–11 chữ số)",
+                                        },
+                                    ]}
+                                >
+                                    <Input
+                                        className="order-form-input"
+                                        placeholder="Nhập số điện thoại..."
+                                        size="large"
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="order-form-group">
+                                <Form.Item
+                                    label="Email *"
+                                    name="email"
+                                    initialValue={user.email}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Vui lòng nhập email",
+                                        },
+                                        {
+                                            type: "email",
+                                            message: "Email không hợp lệ",
+                                        },
+                                    ]}
+                                >
+                                    <Input
+                                        className="order-form-input"
+                                        placeholder="Nhập địa chỉ email..."
+                                        size="large"
+                                    />
+                                </Form.Item>
+                            </div>
+
+                            <div className="order-form-group">
+                                <Form.Item label="Ghi chú đơn hàng" name="note">
+                                    <TextArea
+                                        className="order-form-textarea"
+                                        placeholder="Ghi chú thêm..."
+                                        autoSize={{ minRows: 4, maxRows: 6 }}
+                                    />
+                                </Form.Item>
+                            </div>
+                        </Form>
+                    </div>
+                </Col>
+
+                {/* Order Summary Section */}
+                <Col xs={24} lg={11}>
+                    <div
+                        className={`order-summary-panel ${
+                            isLoading ? "order-loading-state" : ""
+                        }`}
+                    >
+                        <h3 className="order-summary-heading">Đơn hàng của bạn</h3>
+
+                        {/* Order Header */}
+                        <div className="order-items-header">
+                            <span className="product-column-header">
+                                Sản phẩm
+                            </span>
+                            <span className="subtotal-column-header">
+                                Tạm tính
+                            </span>
+                        </div>
+
+                        {/* Order Items */}
+                        <div className="order-items-list">
+                            {itemOrder.map((item, index) => (
+                                <div key={index} className="order-item-row">
+                                    <div className="item-details">
+                                        {item.name} × {item.amount}
+                                    </div>
+                                    <div className="item-subtotal">
+                                        {(
+                                            item.price * item.amount
+                                        ).toLocaleString()}{" "}
+                                        đ
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Total */}
+                        <div className="order-total-section">
+                            <span className="total-label-text">
+                                Tổng cộng
+                            </span>
+                            <span className="total-amount-display">
+                                {totalPrice.toLocaleString()} đ
+                            </span>
+                        </div>
+
+                        {/* Payment Methods */}
+                        <div className="payment-methods-section">
+                            <h4 className="payment-methods-heading">
+                                Phương thức thanh toán
+                            </h4>
+                            <Radio.Group
+                                className="payment-options-container"
+                                onChange={handlePayment}
+                                value={payment}
+                                style={{ width: "100%" }}
+                            >
+                                <div
+                                    className={`payment-option-item ${
+                                        payment === "cash-on-delivery"
+                                            ? "selected"
+                                            : ""
+                                    }`}
+                                >
+                                    <Radio value="cash-on-delivery">
+                                        <span>
+                                            💰 Thanh toán khi nhận hàng (COD)
+                                        </span>
+                                    </Radio>
+                                </div>
+                                <div
+                                    className={`payment-option-item ${
+                                        payment === "paypal" ? "selected" : ""
+                                    }`}
+                                >
+                                    <Radio value="paypal">
+                                        <span>💳 Thanh toán qua PayPal</span>
+                                    </Radio>
+                                </div>
+                                <div
+                                    className={`payment-option-item ${
+                                        payment === "vnpay" ? "selected" : ""
+                                    }`}
+                                >
+                                    <Radio value="vnpay">
+                                        <span>🏦 Thanh toán qua VNPay</span>
+                                    </Radio>
+                                </div>
+                            </Radio.Group>
+                        </div>
+
+                        {/* Payment Button or PayPal */}
+                        {payment === "paypal" ? (
+                            <div className="paypal-button-wrapper">
+                                <PayPalButton
+                                    amount={(totalPrice / 25000).toFixed(2)} // Quy đổi sang USD
+                                    shippingPreference="NO_SHIPPING"
+                                    options={{
+                                        clientId: "YOUR_PAYPAL_CLIENT_ID", // Thay bằng clientId thực tế
+                                        currency: "USD",
+                                    }}
+                                    createOrder={(data, actions) => {
+                                        return actions.order.create({
+                                            purchase_units: [
+                                                {
+                                                    amount: {
+                                                        value: (
+                                                            totalPrice / 25000
+                                                        ).toFixed(2),
+                                                    },
+                                                },
+                                            ],
+                                        });
+                                    }}
+                                    onApprove={(data, actions) => {
+                                        return actions.order
+                                            .capture()
+                                            .then((details) => {
+                                                const infoUser = form.getFieldsValue();
+
+                                                return fetch(
+                                                    "http://localhost:3000/api/v1/client/order/paypal-transaction-complete",
+                                                    {
+                                                        method: "post",
+                                                        headers: {
+                                                            "Content-Type":
+                                                                "application/json",
+                                                        },
+                                                        body: JSON.stringify({
+                                                            orderID:
+                                                                data.orderID,
+                                                            userId,
+                                                            infoUser,
+                                                            product: itemOrder,
+                                                            totalPrice,
+                                                            payment,
+                                                            status: "waiting",
+                                                        }),
+                                                    }
+                                                )
+                                                    .then((response) =>
+                                                        response.json()
+                                                    )
+                                                    .then((data) => {
+                                                        if (data.code === 200) {
+                                                            handleNavigateSuccessOrder();
+                                                        } else {
+                                                            console.log(
+                                                                "Transaction failed:",
+                                                                data
+                                                            );
+                                                        }
+                                                    })
+                                                    .catch((error) =>
+                                                        console.error(
+                                                            "Error processing transaction:",
+                                                            error
+                                                        )
+                                                    );
+                                            });
+                                    }}
+                                    onError={(err) => {
+                                        console.error("Payment Error:", err);
+                                        alert(
+                                            "Đã xảy ra lỗi với PayPal. Vui lòng thử lại."
+                                        );
+                                    }}
+                                    style={{
+                                        layout: "vertical",
+                                        color: "blue",
+                                        shape: "rect",
+                                        label: "paypal",
+                                    }}
+                                />
+                            </div>
+                        ) : (
+                            <button
+                                className={`place-order-button ${
+                                    !payment || isLoading ? "order-disabled" : ""
+                                }`}
+                                onClick={hanldeSubmit}
+                                disabled={!payment || isLoading}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <span>Đang xử lý...</span>
+                                        <div className="order-loading-spinner"></div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span>🚀 Đặt hàng ngay</span>
+                                    </>
+                                )}
+                            </button>
+                        )}
+
+                        {/* Security Note */}
+                        <div className="order-security-note">
+                            <small>
+                                🔒 Thông tin của bạn được bảo mật và mã hóa an
+                                toàn
+                            </small>
+                        </div>
+                    </div>
+                </Col>
+            </Row>
+        </div>
     );
 };
 

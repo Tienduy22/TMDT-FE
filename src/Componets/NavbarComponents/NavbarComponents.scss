@@ -1,12 +1,12 @@
 .navbar {
-    width: 120%;
+    width: 100%;
     font-family: "Roboto", sans-serif;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 16px;
     padding: 24px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
+    // transition: all 0.3s ease;
 
     &:hover {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -155,31 +155,5 @@
     .navbar {
         max-width: 100%;
         margin: 0 16px;
-    }
-}
-
-// Animation keyframes
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.navbar-material, .navbar-price-range {
-    animation: fadeInUp 0.3s ease-out;
-    
-    .material-option, .price-range-option {
-        animation: fadeInUp 0.3s ease-out;
-        
-        &:nth-child(1) { animation-delay: 0.1s; }
-        &:nth-child(2) { animation-delay: 0.2s; }
-        &:nth-child(3) { animation-delay: 0.3s; }
-        &:nth-child(4) { animation-delay: 0.4s; }
-        &:nth-child(5) { animation-delay: 0.5s; }
     }
 }

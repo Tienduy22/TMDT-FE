@@ -54,6 +54,10 @@ function Home() {
         navigate("/products")
     }
 
+    const handleProductDetail = (id) => {
+        navigate(`products/detail/${id}`)
+    }
+
     return (
         <div className="home">
             <SliderComponets arrSlider={[Banner1, Banner2]} />
@@ -81,7 +85,7 @@ function Home() {
                     <div className="products-grid">
                         {product?.map((item) => {
                             return (
-                                <div className="product-popular">
+                                <div className="product-popular" onClick={() => handleProductDetail(item._id)}>
                                     <CardProduct
                                         title={item.title}
                                         img={item.thumbnail}

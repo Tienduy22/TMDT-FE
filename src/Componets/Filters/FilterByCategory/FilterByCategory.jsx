@@ -26,13 +26,13 @@ function FilterByCategory({ onChange, activeCategoryId }) {
 
     return (
         <div className="filter-category-wrapper">
-            <Row className="category-filter" gutter={[16, 16]}>
+            <Row className="category-filter">
                 {categories.map((category) => (
                     <Col 
                         xs={12} 
                         sm={8} 
                         md={6} 
-                        lg={24 / categories.length} 
+                        lg={6} 
                         key={category.id}
                     >
                         <div

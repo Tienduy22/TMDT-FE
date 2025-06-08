@@ -1,67 +1,30 @@
 .filter-category-wrapper {
     width: 100%;
-    background: #eff3f6;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    background: #fff;
 }
 
 .category-filter {
-    width: 1130px;
+    width: 100%;
+    border-radius: 20px;
     
     .category-item {
+        width: 100%;
+        height: 100%;
         display: flex;
+        justify-content: center;
         flex-direction: column;
         align-items: center;
         text-align: center;
         padding: 16px 12px;
-        border-radius: 12px;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         background: #ffffff;
         border: 2px solid transparent;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-
-        &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(215, 72, 72, 0.15);
-            border-color: rgba(215, 72, 72, 0.2);
-            
-            .category-image-wrapper {
-                transform: scale(1.1);
-                
-                &::before {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-            
-            .category-title {
-                color: #d74848;
-                font-weight: 600;
-            }
-        }
 
         &.active {
-            background: linear-gradient(135deg, #f08f8f 50%, #e85a5a 100%);
-            border-color: #d74848;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(215, 72, 72, 0.3);
-
-            .category-image-wrapper {
-                background: rgba(255, 255, 255, 0.2);
-                border-color: rgba(255, 255, 255, 0.3);
-                
-                &::before {
-                    background: rgba(255, 255, 255, 0.1);
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-
             .category-title {
-                color: white;
+                color: rgb(150, 28, 28);
                 font-weight: 600;
             }
 
@@ -71,9 +34,9 @@
                 bottom: -2px;
                 left: 50%;
                 transform: translateX(-50%);
-                width: 24px;
+                width: 60px;
                 height: 3px;
-                background: linear-gradient(90deg, transparent, #fff, transparent);
+                background: linear-gradient(90deg, transparent, #f56f6f, transparent);
                 border-radius: 2px;
             }
         }

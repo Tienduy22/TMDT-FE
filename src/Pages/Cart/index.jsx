@@ -57,7 +57,7 @@ const Cart = () => {
                 })
             );
         } else {
-            await cartService.cartUpdateQuantity(user_id,"increase",id)
+            await cartService.cartUpdateQuantity(user_id, "increase", id);
             dispatch(
                 increaseAmountCart({
                     cartItem: {
@@ -78,7 +78,7 @@ const Cart = () => {
                 })
             );
         } else {
-            await cartService.cartUpdateQuantity(user_id,"decrease",id)
+            await cartService.cartUpdateQuantity(user_id, "decrease", id);
             dispatch(
                 decreaseAmountCart({
                     cartItem: {
@@ -117,6 +117,14 @@ const Cart = () => {
     const handleNavigateInfoOrder = () => {
         navigate("/info_order");
     };
+
+    let shippingFee = 0
+
+    if(totalPrice) {
+        shippingFee = totalPrice < 1000000 ? 35000 : 0;
+        console.log(totalPrice)
+        console.log(shippingFee)
+    }
 
     return (
         <div className="cart-container">
@@ -255,7 +263,9 @@ const Cart = () => {
                                 </strong>
                             </Col>
                             <Col span={12} className="text-right">
-                                35.000 VNĐ
+                                <p>
+                                    {(shippingFee).toLocaleString()} VNĐ
+                                </p>
                             </Col>
                         </Row>
                         <Row className="cart-summary-item">
@@ -263,7 +273,7 @@ const Cart = () => {
                                 <strong className="text">Tổng:</strong>
                             </Col>
                             <Col span={12} className="text-right">
-                                {(totalPrice + 35000).toLocaleString()} VNĐ
+                                {(totalPrice + shippingFee).toLocaleString()} VNĐ
                             </Col>
                         </Row>
                         <Input
