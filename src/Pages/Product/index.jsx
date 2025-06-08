@@ -1,24 +1,34 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Col, Row } from "antd";
-
+import * as ActionUserService from "../../Services/actionUserService"
 import CardProduct from "@/Componets/CardProduct";
 import * as ProductService from "@/Services/productService";
 import "./Product.scss";
 import ProductFilter from "@/Componets/ProductFilters/ProductFilter";
 import PaginationComponents from "@/Componets/Pagination";
 import NavbarComponents from "../../Componets/NavbarComponents";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 
 function Product() {
     const [product, setProduct] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState({});
     const navigate = useNavigate();
+    const user = useSelector((state) => state.user);
+    let user_id;
+    if (user.token) {
+        user_id = jwtDecode(user.token).id;
+    }
 
     const fetchProduct = async () => {
         try {
             const res = await ProductService.productGet(
                 filters.CategoryId,
+                filters.material,
+                filters.priceRange,
+                filters.sort,
                 currentPage
             );
             setProduct(res.products);
@@ -35,7 +45,14 @@ function Product() {
         setCurrentPage(e);
     };
 
-    const handleProductClick = (item) => {
+    const handleProductClick = async (item) => {
+        const data = {
+            user_id: user_id,
+            product_id: [item._id],
+            action_type: "view",
+        };
+        await ActionUserService.UserAction(data)
+
         navigate(`/products/detail/${item._id}`);
     };
 
@@ -47,11 +64,16 @@ function Product() {
         setCurrentPage(1);
     };
 
+    console.log(filters);
+
     return (
         <div className="container-product">
             <Row className="product-page-layout" gutter={24}>
                 <Col span={4} className="nav-col">
-                    <NavbarComponents />
+                    <NavbarComponents
+                        filters={filters}
+                        onChange={handleFilterChange}
+                    />
                 </Col>
 
                 <Col span={18}>

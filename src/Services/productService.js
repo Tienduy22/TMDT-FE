@@ -2,25 +2,24 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_BACKEND;
 
+export const productGet = async (category,material, priceRange,sort, currentPage) => {
+    const params = new URLSearchParams();
 
-export const productGet = async (category, currentPage) => {
-    let res = {};
-    if (category && currentPage) {
-        res = await axios.get(
-            `${API}/admin/products?productCategory=${category}&page=${currentPage}`
-        );
-    } else if (currentPage) {
-        res = await axios.get(`${API}/admin/products?page=${currentPage}`);
-    } else {
-        res = await axios.get(`${API}/admin/products`);
-    }
+    if (category) params.append("productCategory", category);
+    if (material) params.append("material", material);
+    if (priceRange) params.append("priceRange", priceRange);
+    if (sort) params.append("sort", sort);
+    if (currentPage) params.append("page", currentPage);
+
+    const url = `${API}/admin/products?${params.toString()}`;
+
+    const res = await axios.get(url);
     return res.data;
 };
 
 export const countProduct = async (category_id) => {
     let res;
     if (category_id) {
-        console.log("OK");
         res = await axios.get(
             `${API}/admin/products/count?category_id=${category_id}`
         );
@@ -31,9 +30,7 @@ export const countProduct = async (category_id) => {
 };
 
 export const updateStock = async (data) => {
-    const res = await axios.patch(
-        `${API}/admin/products/stock`,data
-    );
+    const res = await axios.patch(`${API}/admin/products/stock`, data);
     return res.data;
 };
 
@@ -58,9 +55,9 @@ export const productSearch = async (keyword) => {
 };
 
 export const productCreate = async (data) => {
-    const res = await axios.post(`${API}/admin/products/create`,data, {
+    const res = await axios.post(`${API}/admin/products/create`, data, {
         headers: {
-            "Content-Type": "multipart/form-data", 
+            "Content-Type": "multipart/form-data",
         },
     });
     return res.data;

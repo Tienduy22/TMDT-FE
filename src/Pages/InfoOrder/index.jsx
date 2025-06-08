@@ -10,6 +10,7 @@ import { deleteAllOrder } from "../../Redux/reducers/orderReducer";
 import * as CartService from "../../Services/cartService";
 import * as OrderService from "../../Services/orderService";
 import * as ProductService from "../../Services/productService";
+import * as ActionUserService from "../../Services/actionUserService"
 const { TextArea } = Input;
 
 const InfoOrder = () => {
@@ -57,6 +58,12 @@ const InfoOrder = () => {
     const handlePayment = (e) => {
         setPayment(e.target.value);
     };
+
+    const data = {
+        user_id: userId,
+        product_id: itemOrder,
+        action_type: "purchase",
+    };
     const hanldeSubmit = async () => {
         const data = {
             userId,
@@ -72,14 +79,16 @@ const InfoOrder = () => {
             payment,
             status: "waiting",
         };
-        const res = await OrderService.CashOnDelivery(data)
+        const res = await OrderService.CashOnDelivery(data);
         if (res.code === 200) {
-            await ProductService.updateStock(itemOrder)
+            await ActionUserService.UserAction(data)
+            await ProductService.updateStock(itemOrder);
             dispatch(deleteAllOrder());
             navigate("/success-order");
         }
     };
     const handleNavigateSuccessOrder = async () => {
+        await ActionUserService.UserAction(data)
         if (user.fullName) {
             await CartService.cartDeleteItem(userId);
             dispatch(deleteAllCart());

@@ -8,7 +8,7 @@ import {
     InboxOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProductDetail.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrder } from "../../Redux/reducers/orderReducer";
@@ -16,6 +16,7 @@ import { InputNumber,Rate } from "antd";
 import { jwtDecode } from "jwt-decode";
 import * as cartService from "@/Services/cartService";
 import * as ProductService from "../../Services/productService"
+import * as ActionUserService from "../../Services/actionUserService"
 import CommentProduct from "../../Componets/Comment";
 import RecommendProducts from "../../Componets/RecommendProducts";
 import { addCart } from "../../Redux/reducers/cartUserReducer";
@@ -24,6 +25,7 @@ function ProductDetail() {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [amount, setAmount] = useState(1);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
     let user_id;
@@ -44,7 +46,14 @@ function ProductDetail() {
         return <h1>Loading...</h1>;
     }
 
+    const data = {
+        user_id: user_id,
+        product_id: [id],
+        action_type: "add_to_cart"
+    }
+
     const handleClickCart = async () => {
+        await ActionUserService.UserAction(data)
         const orderItem = {
             name: product?.title,
             amount: amount,
@@ -68,6 +77,34 @@ function ProductDetail() {
             )
         }
     };
+
+    const handleClickBuy = async () => {
+        await ActionUserService.UserAction(data)
+        const orderItem = {
+            name: product?.title,
+            amount: amount,
+            image: product?.thumbnail,
+            price: product?.price,
+            product_id: product?._id,
+        };
+        const cartItem = orderItem
+        if (!user_id) {
+            dispatch(
+                addOrder({
+                    orderItem,
+                })
+            );
+            navigate("/cart")
+        } else {
+            await cartService.cartUpdate(user_id, orderItem);
+            dispatch(
+                addCart({
+                    cartItem,
+                })
+            )
+            navigate("/cart")
+        }
+    }
 
     const onChangeNumber = (value) => {
         setAmount(parseInt(value));
@@ -100,7 +137,7 @@ function ProductDetail() {
                                 onChange={onChangeNumber}
                             />
                             <Flex wrap gap="small">
-                                <Button className="btn-buy">Mua ngay</Button>
+                                <Button className="btn-buy" onClick={handleClickBuy}>Mua ngay</Button>
                                 <Button
                                     className="add-cart"
                                     onClick={handleClickCart}
