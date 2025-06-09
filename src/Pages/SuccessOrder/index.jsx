@@ -20,10 +20,11 @@ const { Title, Text } = Typography;
 
 const SuccessOrder = () => {
     const {vnp_BankCode} = useParams()
+    const {user_id} = useParams()
     const navigate = useNavigate();
     const [order, setOrder] = useState("");
     const [user, setUser] = useState("");
-    const [products, setProducts] = useState("");
+    const [products, setProducts] = useState([]);
 
     const NewOrder = async () => {
         const res = await OrderService.NewOrderGet()
@@ -36,7 +37,7 @@ const SuccessOrder = () => {
     useEffect(() => {
         console.log("OKK")
         NewOrder();
-    },[])
+    },[user_id])
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN", {
@@ -107,7 +108,7 @@ const SuccessOrder = () => {
                 {/* Chi tiết sản phẩm */}
                 <Card className="products-card" title="Chi Tiết Sản Phẩm">
                     <div className="products-list">
-                        {products.map((item, index) => (
+                        {products?.map((item, index) => (
                             <div key={index} className="product-item">
                                 <div className="product-info">
                                     <Text strong>{item?.name}</Text>

@@ -103,7 +103,7 @@ const InfoOrder = () => {
                 await ProductService.updateStock(itemOrder);
                 dispatch(deleteAllCart());
                 dispatch(deleteAllOrder());
-                navigate("/success-order");
+                navigate(`/success-order/${userId}`);
             }
         } catch (error) {
             console.error("Order submission failed:", error);
@@ -123,7 +123,7 @@ const InfoOrder = () => {
             } else {
                 dispatch(deleteAllOrder());
             }
-            navigate("/success-order");
+            navigate(`/success-order/${userId}`);
         } catch (error) {
             console.error("Navigation failed:", error);
         } finally {

@@ -148,7 +148,7 @@ function App() {
                     </Route>
                     <Route path="cart" element={<Cart />} />
                     <Route path="info_order" element={<InfoOrder />} />
-                    <Route path="success-order" element={<SuccessOrder />} />
+                    <Route path="success-order/:user_id" element={<SuccessOrder />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
