@@ -9,6 +9,13 @@ export const OrderGet = async () => {
     return res.data;
 };
 
+export const OrderOfUser = async (user_id) => {
+    const res = await axios.get(
+        `${API}/client/order/${user_id}`
+    );
+    return res.data;
+};
+
 export const NewOrderGet = async () => {
     const res = await axios.get(
         `${API}/client/order/new`

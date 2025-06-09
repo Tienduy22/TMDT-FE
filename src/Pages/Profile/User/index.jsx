@@ -1,26 +1,42 @@
 import { useEffect, useState } from "react";
-import "./User.scss";
+import {
+    Card,
+    Form,
+    Input,
+    Button,
+    Avatar,
+    Divider,
+    Space,
+    Select,
+    message,
+} from "antd";
+import { UserOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { Select, Space } from "antd";
 import * as UserService from "@/Services/userService";
+import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
-import { jwtDecode } from 'jwt-decode'; 
+import { useNavigate } from "react-router-dom";
 
-const User = () => {
+const UserProfile = () => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [form] = Form.useForm();
     const [addressApi, setAddressApi] = useState();
     const [province, setProvince] = useState();
     const [district, setDistrict] = useState();
-    const user = useSelector((state) => state.user)
+    const user = useSelector((state) => state.user);
+    const navigate = useNavigate();
+    const decode = jwtDecode(user.token);
 
     const [formData, setFormData] = useState({
-        name: user?.fullName,
         address: user?.address,
-        phone: user.phone,
-        email: user.email,
     });
 
-    const decode = jwtDecode(user.token)
-
+    const userInfo = {
+        name: user?.fullName,
+        email: user?.email,
+        phone: user?.phone,
+        address: user?.address,
+    };
 
     useEffect(() => {
         const fetchDataAddress = async () => {
@@ -33,107 +49,200 @@ const User = () => {
     }, []);
 
     const handleChangeProvince = (e) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            address: "" + e + " / "
-        }))
+            address: "" + e + " / ",
+        }));
         const result = addressApi.filter((item) => item.name === e);
         setProvince(result[0]);
     };
 
     const handleChangeDistrict = (e) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            address: prev.address + e + " / "
-        }))
+            address: prev.address + e + " / ",
+        }));
         const result = province.districts.filter((item) => item.name === e);
         setDistrict(result[0]);
     };
 
     const handleChangeCommune = (e) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            address: prev.address + e
-        }))
+            address: prev.address + e,
+        }));
+        form.setFieldsValue({ address: formData.address + e });
     };
 
-    const handleChange = async (e) => {
-        const {name, value} = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
-
-    const hanldeSaveInfo = async (e) => {
-        e.preventDefault();
-        const res = await UserService.updateUser(decode.id,formData)
+    const handleEdit = () => {
+        setIsEditing(true);
+        form.setFieldsValue(userInfo);
     };
 
+    const handleSave = async (e) => {
+        const res = await UserService.updateUser(decode.id, e);
+        if (res.code === 200) {
+            message.success("Cập nhật thành công");
+            setTimeout(() => {
+                window.location.reload(); // 🔁 delay reload
+            }, 700);
+        }
+    };
+
+    const handleCancel = () => {
+        setIsEditing(false);
+        form.resetFields();
+    };
 
     return (
-        <>
-            <div className="user">
-                <form action="" onSubmit={hanldeSaveInfo}>
-                    <p className="name">
-                        Họ và tên: {" "}
-                        <span>
-                            <input type="text" name="name" value={formData?.name} className="name-input" onChange={handleChange}/>
-                        </span>
-                    </p>
-                    <p className="address">Địa chỉ: <span>{formData?.address}</span></p>
-                    <p className="address-input" style={{marginLeft:20}}>
-                        <Select
-                            showSearch
-                            placeholder="Tỉnh/Thành phố ..."
-                            style={{ width: 160 , marginRight:20}}
-                            onChange={handleChangeProvince}
-                            options={addressApi?.map((address) => ({
-                                value: address.name,
-                                label: address.name,
-                            }))}
-                        />
-                        <Select
-                            showSearch
-                            placeholder="Quận/Huyện ..."
-                            style={{ width: 160, marginRight:20 }}
-                            onChange={handleChangeDistrict}
-                            options={province?.districts?.map((address) => ({
-                                value: address.name,
-                                label: address.name,
-                            }))}
-                        />
-                        <Select
-                            showSearch
-                            placeholder="Xã/Phường ..."
-                            style={{ width: 160, marginRight:20 }}
-                            onChange={handleChangeCommune}
-                            options={district?.wards?.map((address) => ({
-                                value: address.name,
-                                label: address.name,
-                            }))}
-                        />
-                    </p>
-                    <p className="phone">
-                        Số điện thoại: {" "}
-                        <span>
-                            <input type="text" name="phone" value={formData?.phone} className="phone-input" onChange={handleChange}/>
-                        </span>
-                    </p>
-                    <p className="email">
-                        Email: {" "}
-                        <span>
-                            <input type="text" name="email" value={formData?.email} className="email-input" onChange={handleChange}/>
-                        </span>
-                    </p>
-                    <button className="save">
-                        Lưu
-                    </button>
-                </form>
-            </div>
-        </>
+        <div className="profile-container">
+            <Card
+                title="Hồ sơ cá nhân"
+                extra={
+                    !isEditing && (
+                        <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            onClick={handleEdit}
+                        >
+                            Chỉnh sửa
+                        </Button>
+                    )
+                }
+                className="profile-card"
+            >
+                <div className="profile-header">
+                    <Avatar
+                        size={80}
+                        icon={<UserOutlined />}
+                        className="profile-avatar"
+                    />
+                    <div className="profile-info">
+                        <h3>{userInfo.name}</h3>
+                        <p className="profile-email">{userInfo.email}</p>
+                    </div>
+                </div>
+
+                <Divider />
+
+                {!isEditing ? (
+                    <div className="profile-details">
+                        <div className="detail-row">
+                            <span className="detail-label">Họ và tên:</span>
+                            <span className="detail-value">
+                                {userInfo.name}
+                            </span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Email:</span>
+                            <span className="detail-value">
+                                {userInfo.email}
+                            </span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Số điện thoại:</span>
+                            <span className="detail-value">
+                                {userInfo.phone}
+                            </span>
+                        </div>
+                        <div className="detail-row">
+                            <span className="detail-label">Địa chỉ:</span>
+                            <span className="detail-value">
+                                {userInfo.address}
+                            </span>
+                        </div>
+                    </div>
+                ) : (
+                    <Form form={form} layout="vertical" onFinish={handleSave}>
+                        <Form.Item
+                            name="name"
+                            label="Họ và tên"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập họ tên!",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="email"
+                            label="Email"
+                            rules={[
+                                {
+                                    required: true,
+                                    type: "email",
+                                    message: "Vui lòng nhập email hợp lệ!",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            name="phone"
+                            label="Số điện thoại"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập số điện thoại!",
+                                },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item name="address" label="Địa chỉ">
+                            <Select
+                                showSearch
+                                placeholder="Tỉnh/Thành phố ..."
+                                style={{ width: 160, marginRight: 20 }}
+                                onChange={handleChangeProvince}
+                                options={addressApi?.map((address) => ({
+                                    value: address.name,
+                                    label: address.name,
+                                }))}
+                            />
+                            <Select
+                                showSearch
+                                placeholder="Quận/Huyện ..."
+                                style={{ width: 160, marginRight: 20 }}
+                                onChange={handleChangeDistrict}
+                                options={province?.districts?.map(
+                                    (address) => ({
+                                        value: address.name,
+                                        label: address.name,
+                                    })
+                                )}
+                            />
+                            <Select
+                                showSearch
+                                placeholder="Xã/Phường ..."
+                                style={{ width: 160, marginRight: 20 }}
+                                onChange={handleChangeCommune}
+                                options={district?.wards?.map((address) => ({
+                                    value: address.name,
+                                    label: address.name,
+                                }))}
+                            />
+                            <Input.TextArea rows={3} />
+                        </Form.Item>
+                        <Form.Item>
+                            <Space>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    icon={<SaveOutlined />}
+                                >
+                                    Lưu thay đổi
+                                </Button>
+                                <Button onClick={handleCancel}>Hủy</Button>
+                            </Space>
+                        </Form.Item>
+                    </Form>
+                )}
+            </Card>
+        </div>
     );
 };
 
-export default User;
+export default UserProfile;

@@ -47,6 +47,10 @@ import RefundAdmin from "./Pages/Admin/Refund_Admin/Main";
 import Refund_Detail from "./Pages/Admin/Refund_Admin/Detail";
 import Refund_Edit from "./Pages/Admin/Refund_Admin/Edit";
 import SuccessOrder from "./Pages/SuccessOrder";
+import OrderUser from "./Pages/Profile/OrderUser";
+import UserProfile from "./Pages/Profile/User";
+import ChangePassword from "./Pages/Profile/ChangePassword";
+import ProtectedRoute from "./Componets/ProtectedRoute";
 
 function App() {
     const dispatch = useDispatch();
@@ -127,7 +131,21 @@ function App() {
                     />
                     <Route path="about" element={<AboutPage />} />
                     <Route path="refund" element={<ReturnProductPage />} />
-                    <Route path="profile" element={<Profile />} />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route path="order_user" element={<OrderUser />} />
+                        <Route
+                            path="change_pasword"
+                            element={<ChangePassword />}
+                        />
+                        <Route index element={<UserProfile />} />{" "}
+                    </Route>
                     <Route path="cart" element={<Cart />} />
                     <Route path="info_order" element={<InfoOrder />} />
                     <Route path="success-order" element={<SuccessOrder />} />
@@ -203,8 +221,14 @@ function App() {
                         />
                         <Route path="role/create" element={<Role_Create />} />
                         <Route path="refund" element={<RefundAdmin />} />
-                        <Route path="refund/detail/:refund_id" element={<Refund_Detail />} />
-                        <Route path="refund/edit/:refund_id" element={<Refund_Edit />} />
+                        <Route
+                            path="refund/detail/:refund_id"
+                            element={<Refund_Detail />}
+                        />
+                        <Route
+                            path="refund/edit/:refund_id"
+                            element={<Refund_Edit />}
+                        />
                     </Route>
                 ) : null}
 

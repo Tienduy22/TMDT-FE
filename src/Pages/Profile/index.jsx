@@ -1,120 +1,88 @@
-import React, { useState } from "react";
-import { FileProtectOutlined, UserOutlined } from "@ant-design/icons";
-import { Menu, Row, Col } from "antd";
-import User from "./User";
-import "./Profile.scss"
+import { useState } from "react";
+import { Layout, Menu, Avatar } from "antd";
+import {
+    UserOutlined,
+    LockOutlined,
+    ShoppingOutlined,
+} from "@ant-design/icons";
+import UserProfile from "./User";
+import "./Profile.scss";
+import OrderUser from "./OrderUser";
+import { useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import ChangePassword from "./ChangePassword";
 
-const items = [
-    {
-        key: "1",
-        icon: <UserOutlined />,
-        label: "Tài khoản của tôi",
-        children: [
-            { key: "11", label: "Hồ sơ" },
-            { key: "12", label: "Đổi mật khẩu" },
-        ],
-    },
-    {
-        key: "2",
-        icon: <FileProtectOutlined />,
-        label: "Đơn mua hàng",
-    },
-];
-
-const getLevelKeys = (items1) => {
-    const key = {};
-    const func = (items2, level = 1) => {
-        items2.forEach((item) => {
-            if (item.key) {
-                key[item.key] = level;
-            }
-            if (item.children) {
-                func(item.children, level + 1);
-            }
-        });
-    };
-    func(items1);
-    return key;
-};
-
-const levelKeys = getLevelKeys(items);
+const { Sider, Content } = Layout;
 
 const Profile = () => {
-    const [stateOpenKeys, setStateOpenKeys] = useState(["1", "11"]);
+    const [selectedKey, setSelectedKey] = useState("profile");
+    const user = useSelector((state) => state.user);
+    const decode = jwtDecode(user.token);
 
-    const onOpenChange = (openKeys) => {
-        const currentOpenKey = openKeys.find(
-            (key) => stateOpenKeys.indexOf(key) === -1
-        );
-        // open
-        if (currentOpenKey !== undefined) {
-            const repeatIndex = openKeys
-                .filter((key) => key !== currentOpenKey)
-                .findIndex(
-                    (key) => levelKeys[key] === levelKeys[currentOpenKey]
-                );
-            setStateOpenKeys(
-                openKeys
-                    // remove repeat key
-                    .filter((_, index) => index !== repeatIndex)
-                    // remove current level all child
-                    .filter(
-                        (key) => levelKeys[key] <= levelKeys[currentOpenKey]
-                    )
-            );
-        } else {
-            // close
-            setStateOpenKeys(openKeys);
+    const menuItems = [
+        {
+            key: "profile",
+            icon: <UserOutlined />,
+            label: "Hồ sơ cá nhân",
+        },
+        {
+            key: "password",
+            icon: <LockOutlined />,
+            label: "Đổi mật khẩu",
+        },
+        {
+            key: "orders",
+            icon: <ShoppingOutlined />,
+            label: "Đơn hàng",
+        },
+    ];
+
+    const renderContent = () => {
+        switch (selectedKey) {
+            case "profile":
+                return <UserProfile />;
+            case 'password':
+                return <ChangePassword />;
+            case "orders":
+                return <OrderUser />;
+            default:
+                return <UserProfile />;
         }
     };
 
     return (
-        <>
-            <div className="profile">
-                <Row style={{ margin: 50, paddingTop:20, paddingBottom:20 }}>
-                    <Col>
+        <div className="user-dashboard">
+            <Layout className="dashboard-layout">
+                <Sider width={280} className="dashboard-sider">
+                    <div className="sider-content">
+                        <div className="user-welcome">
+                            <Avatar
+                                size={64}
+                                icon={<UserOutlined />}
+                                className="welcome-avatar"
+                            />
+                            <p className="welcome-name">{user?.fullName}</p>
+                            <p className="welcome-role">Khách hàng</p>
+                        </div>
+
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={["231"]}
-                            openKeys={stateOpenKeys}
-                            onOpenChange={onOpenChange}
-                            style={{ width: 256, marginRight: 20, border: "1.5px solid #e8e8e8", borderRadius: "6px", fontSize:15 }}
-                            items={items}
+                            selectedKeys={[selectedKey]}
+                            items={menuItems}
+                            onClick={({ key }) => setSelectedKey(key)}
+                            className="dashboard-menu"
                         />
-                    </Col>
-                    <Col
-                        style={{
-                            height: 530,
-                            width: 840,
-                            background: "#fff",
-                            border: "1px solid #e8e8e8",
-                            borderRadius: "6px",
-                            paddingTop: 10,
-                            paddingLeft: 40,
-                            paddingRight: 40,
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                        }}
-                    >
-                        <p style={{ fontSize: 24, fontFamily: "Roboto" }}>
-                            Hồ sơ của tôi
-                        </p>
-                        <p
-                            style={{
-                                fontSize: 17,
-                                fontFamily: "Roboto",
-                                opacity: 0.7,
-                                paddingBottom: 20,
-                                borderBottom: ".1rem solid rgb(225, 219, 219)",
-                            }}
-                        >
-                            Quản lý thông tin hồ sơ để bảo mật tài khoản
-                        </p>
+                    </div>
+                </Sider>
 
-                        <User />
-                    </Col>
-                </Row>
-            </div>
-        </>
+                <Layout>
+                    <Content className="dashboard-content">
+                        {renderContent()}
+                    </Content>
+                </Layout>
+            </Layout>
+        </div>
     );
 };
+
 export default Profile;

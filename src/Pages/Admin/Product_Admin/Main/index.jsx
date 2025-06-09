@@ -8,6 +8,7 @@ import {
     EyeOutlined,
 } from "@ant-design/icons";
 import "./ProductAdmin.scss";
+import PaginationComponents from "../../../../Componets/Pagination";
 import * as ProductService from "../../../../Services/productService";
 import { useNavigate } from "react-router-dom";
 import { TakePermissions } from "../../../../Componets/TakePermissions";
@@ -15,16 +16,24 @@ import { TakePermissions } from "../../../../Componets/TakePermissions";
 function ProductAdmin() {
     const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filters, setFilters] = useState({});
     const navigate = useNavigate();
     const permissions = TakePermissions();
 
+
     useEffect(() => {
         const productGet = async () => {
-            const res = await ProductService.productGet();
+            const res = await ProductService.productGet(currentPage);
             setProducts(res.products);
         };
         productGet();
-    }, []);
+    }, [currentPage]);
+
+    const handleChangePagination = (e) => {
+        console.log(e)
+        setCurrentPage(e);
+    };
 
     const handleDelete = async (id) => {
         const res = await ProductService.productDelete(id);
@@ -182,6 +191,11 @@ function ProductAdmin() {
                                 </Row>
                             ))
                         )}
+                    </div>
+                    <div className="pagination" style={{marginTop:20}}>
+                        <PaginationComponents
+                            onChange={handleChangePagination}
+                        />
                     </div>
                 </>
             ) : (

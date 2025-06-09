@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = process.env.REACT_APP_API_BACKEND;
 
-export const productGet = async (category,material, priceRange,sort, currentPage) => {
+export const productGet = async (currentPage, category,material, priceRange,sort) => {
     const params = new URLSearchParams();
 
     if (category) params.append("productCategory", category);

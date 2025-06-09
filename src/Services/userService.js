@@ -79,3 +79,8 @@ export const UserDelete = async(user_id) => {
     const res = await axios.delete(`${API}/client/user/delete/${user_id}`)
     return res.data
 }
+
+export const UserChangePassword = async(user_id,data) => {
+    const res = await axios.post(`${API}/client/user/password/reset/${user_id}`,data)
+    return res.data
+}

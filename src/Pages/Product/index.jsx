@@ -26,11 +26,11 @@ function Product() {
     const fetchProduct = async () => {
         try {
             const res = await ProductService.productGet(
+                currentPage,
                 filters.CategoryId,
                 filters.material,
                 filters.priceRange,
-                filters.sort,
-                currentPage
+                filters.sort
             );
             setProduct(res.products);
         } catch (error) {
