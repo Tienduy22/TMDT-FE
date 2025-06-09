@@ -9,6 +9,12 @@
         padding: 30px 0px 20px 0px;
         margin-right: 50px;
         margin-left: 40px;
+        .deselect {
+            height: 40px;
+            width: 100%;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
     }
 
     .filter-row,

@@ -16,7 +16,6 @@ import Profile from "./Pages/Profile";
 import ProductCategory from "./Pages/ProductCategory";
 import Cart from "./Pages/Cart";
 import InfoOrder from "./Pages/InfoOrder";
-import SuccessOrder from "./Pages/SuccessOrder";
 import AboutPage from "./Pages/About";
 import Admin from "./Pages/Admin/Layout_Admin";
 import ProductAdmin from "./Pages/Admin/Product_Admin/Main";
@@ -47,6 +46,7 @@ import ReturnProductPage from "./Pages/Refund";
 import RefundAdmin from "./Pages/Admin/Refund_Admin/Main";
 import Refund_Detail from "./Pages/Admin/Refund_Admin/Detail";
 import Refund_Edit from "./Pages/Admin/Refund_Admin/Edit";
+import SuccessOrder from "./Pages/SuccessOrder";
 
 function App() {
     const dispatch = useDispatch();

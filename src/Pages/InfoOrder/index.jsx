@@ -12,6 +12,7 @@ import * as CartService from "../../Services/cartService";
 import * as OrderService from "../../Services/orderService";
 import * as ProductService from "../../Services/productService";
 import * as ActionUserService from "../../Services/actionUserService";
+import * as VnpayService from "../../Services/vnpayService";
 const { TextArea } = Input;
 
 const InfoOrder = () => {
@@ -20,11 +21,6 @@ const InfoOrder = () => {
     const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [name, setName] = useState(user.fullName);
-    const [address, setAddress] = useState(user.address);
-    const [phone, setPhone] = useState(user.phone);
-    const [email, setEmail] = useState(user.email);
-    const [note, setNote] = useState();
     const [payment, setPayment] = useState();
     const [itemOrder, setItemOrder] = useState([]);
     const [userId, setUserId] = useState(""); // Sử dụng state để quản lý userId
@@ -42,7 +38,7 @@ const InfoOrder = () => {
     }, [user.token, cartUser.cartItems, order.orderItems]); // Thêm dependencies
 
     const totalPrice =
-        order?.orderItems?.reduce(
+        itemOrder?.reduce(
             (total, item) => total + item.price * item.amount,
             0
         ) || 0;
@@ -58,9 +54,9 @@ const InfoOrder = () => {
         action_type: "purchase",
     };
 
-
-    const hanldeSubmit = async () => {
+    const handleVnpay = async () => {
         const infoUser = form.getFieldsValue();
+        const paymentMethod = "Vnpay"
         setIsLoading(true);
         try {
             const data = {
@@ -68,13 +64,44 @@ const InfoOrder = () => {
                 infoUser,
                 product: itemOrder,
                 totalPrice,
-                payment,
+                payment: paymentMethod,
+                status: "waiting",
+            };
+            const res = await VnpayService.VnPayCreate(data);
+            if (res.code === 200) {
+                await ActionUserService.UserAction(data);
+                await ProductService.updateStock(itemOrder);
+                dispatch(deleteAllCart());
+                dispatch(deleteAllOrder())
+                window.location.href = res.vnpUrl
+            }
+        } catch (error) {
+            console.error("Order submission failed:", error);
+            message.error("Vui lòng nhập đủ thông tin");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    const hanldeSubmit = async () => {
+        const infoUser = form.getFieldsValue();
+        const paymentMethod = "Cash-on-delivery"
+        setIsLoading(true);
+        try {
+            const data = {
+                userId,
+                infoUser,
+                product: itemOrder,
+                totalPrice,
+                payment: paymentMethod,
                 status: "waiting",
             };
             const res = await OrderService.CashOnDelivery(data);
             if (res.code === 200) {
                 await ActionUserService.UserAction(data);
                 await ProductService.updateStock(itemOrder);
+                dispatch(deleteAllCart());
                 dispatch(deleteAllOrder());
                 navigate("/success-order");
             }
@@ -312,7 +339,7 @@ const InfoOrder = () => {
                                         payment === "vnpay" ? "selected" : ""
                                     }`}
                                 >
-                                    <Radio value="vnpay">
+                                    <Radio value="vnpay" onClick={handleVnpay}>
                                         <span>🏦 Thanh toán qua VNPay</span>
                                     </Radio>
                                 </div>

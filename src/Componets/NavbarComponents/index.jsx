@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Cascader } from "antd";
 import { Radio } from "antd";
 import "./NavbarComponents.scss";
 
-const NavbarComponents = ({ filters, onChange }) => {
+const NavbarComponents = ({ filters, deselect, onChange }) => {
     const optionsSort = [
         { value: "price-asc", label: "Sắp xếp giá tăng dần" },
         { value: "price-desc", label: "Sắp xếp giá giảm dần" },
@@ -77,6 +77,15 @@ const NavbarComponents = ({ filters, onChange }) => {
             });
         }
     };
+
+    useEffect(() => {
+        if (deselect) {
+            setMaterial(null);
+            setPriceRange(null);
+        }
+    }, [deselect]);
+
+
 
     return (
         <div className="navbar">

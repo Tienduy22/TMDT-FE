@@ -7,7 +7,7 @@ function Footer() {
         <footer className="footer">
             <div className="footer-top">
                 <div className="footer-top-left">
-                    <h3>PANDORA</h3>
+                    <h3>Luxury Jewelry</h3>
                     <p>Nhận ưu đãi 10% cho khách hàng mới</p>
                 </div>
                 <div className="footer-top-right">

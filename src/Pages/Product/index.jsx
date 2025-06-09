@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Col, Row } from "antd";
+import { Button, Col, Row } from "antd";
 import * as ActionUserService from "../../Services/actionUserService"
 import CardProduct from "@/Componets/CardProduct";
 import * as ProductService from "@/Services/productService";
@@ -15,6 +15,7 @@ function Product() {
     const [product, setProduct] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState({});
+    const [deselect, setDeselect] = useState(false)
     const navigate = useNavigate();
     const user = useSelector((state) => state.user);
     let user_id;
@@ -57,6 +58,7 @@ function Product() {
     };
 
     const handleFilterChange = (newFilters) => {
+        setDeselect(false)
         setFilters((...preFilters) => ({
             ...preFilters,
             ...newFilters,
@@ -64,14 +66,20 @@ function Product() {
         setCurrentPage(1);
     };
 
-    console.log(filters);
+    const handleDeselect = () => {
+        setDeselect(true)
+        setFilters({})
+    }
+
 
     return (
         <div className="container-product">
             <Row className="product-page-layout" gutter={24}>
                 <Col span={4} className="nav-col">
+                    <Button onClick={handleDeselect} className="deselect">Bỏ chọn tất cả</Button>
                     <NavbarComponents
                         filters={filters}
+                        deselect={deselect}
                         onChange={handleFilterChange}
                     />
                 </Col>
