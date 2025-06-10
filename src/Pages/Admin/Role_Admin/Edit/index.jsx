@@ -17,6 +17,7 @@ function Role_Edit() {
         "account_view", "account_create", "account_detail", "account_edit", "account_deleted",
         "user_view", "user_detail", "user_deleted",
         "order_view", "order_detail", "order_edit", "order_deleted",
+        "refund_view", "refund_detail", "refund_edit", "refund_deleted",
     ];
 
     const fetchRole = async () => {

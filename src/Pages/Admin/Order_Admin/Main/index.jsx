@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Row, Col, message } from "antd";
+import { Button, Input, Row, Col, message, DatePicker } from "antd";
 import {
     PlusOutlined,
     SearchOutlined,
@@ -11,20 +11,39 @@ import "./OrderAdmin.scss";
 import * as OrderService from "../../../../Services/orderService";
 import { useNavigate } from "react-router-dom";
 import { TakePermissions } from "../../../../Componets/TakePermissions";
+import dayjs from "dayjs";
+const { RangePicker } = DatePicker;
 
 function OrderAdmin() {
     const [orders, setOrders] = useState([]);
-    const [search, setSearch] = useState("");
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
     const permissions = TakePermissions();
+
+    const getOrderSearch = async (val) => {
+        const res = await OrderService.OrderSearch(val);
+        setOrders(res.orders);
+    };
 
     useEffect(() => {
         const OrdersGet = async () => {
             const res = await OrderService.OrderGet();
-            setOrders(res.orders);
+            const result = [];
+            if (startDate && endDate) {
+                for (const order of res.orders) {
+                    const date = new Date(order.createdAt);
+                    if (date > startDate && date < endDate) {
+                        result.push(order);
+                    }
+                }
+                setOrders(result);
+            } else {
+                setOrders(res.orders);
+            }
         };
         OrdersGet();
-    }, []);
+    }, [startDate, endDate]);
 
     const handleDelete = async (id) => {
         const res = await OrderService.OrderDelete(id);
@@ -38,6 +57,26 @@ function OrderAdmin() {
         }
     };
 
+    const handleChangeDate = (e) => {
+        if (e) {
+            setStartDate(new Date(e[0]?.$d));
+            setEndDate(new Date(e[1]?.$d));
+            const result = [];
+            for (const order of orders) {
+                const date = new Date(order.createdAt);
+                if (date > startDate && date < endDate) {
+                    result.push(order);
+                }
+            }
+            setOrders(result);
+        }
+    };
+
+    const onSearchChange = async (e) => {
+        const val = e.target.value;
+        getOrderSearch(val);
+    };
+
     return (
         <div className="order-admin">
             {permissions.includes("order_view") ? (
@@ -49,10 +88,10 @@ function OrderAdmin() {
                         <Input
                             placeholder="Tìm kiếm đơn hàng..."
                             prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            style={{ width: 300 }}
+                            onChange={onSearchChange}
+                            style={{ width: 300, marginRight: 30 }}
                         />
+                        <RangePicker onChange={handleChangeDate} />
                     </div>
                     <div className="order-grid">
                         {/* Header */}
@@ -94,9 +133,7 @@ function OrderAdmin() {
                                 >
                                     <Col span={2}>{(index += 1)}</Col>
                                     <Col span={5}>{item.infoUser?.name}</Col>
-                                    <Col span={3}>
-                                        {item.totalPrice} đ
-                                    </Col>
+                                    <Col span={3}>{item.totalPrice} đ</Col>
                                     <Col span={4}>
                                         {new Date(
                                             item.createdAt

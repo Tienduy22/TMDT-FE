@@ -15,9 +15,13 @@ import { TakePermissions } from "../../../../Componets/TakePermissions";
 
 function CategoryAdmin() {
     const [categories, setCategory] = useState([]);
-    const [search, setSearch] = useState("");
     const navigate = useNavigate();
     const permissions = TakePermissions();
+
+    const getCategorySearch = async (val) => {
+        const res = await CategoryService.categorySearch(val);
+        setCategory(res.categories);
+    };
 
     useEffect(() => {
         const categoryGet = async () => {
@@ -25,7 +29,7 @@ function CategoryAdmin() {
             setCategory(res);
         };
         categoryGet();
-    }, [categories.length]);
+    }, []);
 
     const handleDelete = async (id) => {
         const res = await CategoryService.categoryDelete(id);
@@ -37,6 +41,11 @@ function CategoryAdmin() {
         } else {
             message.error("Xóa danh mục thất bại!");
         }
+    };
+
+    const onSearchChange = async (e) => {
+        const val = e.target.value;
+        getCategorySearch(val);
     };
 
     return (
@@ -63,8 +72,7 @@ function CategoryAdmin() {
                         <Input
                             placeholder="Tìm kiếm danh mục sản phẩm..."
                             prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={onSearchChange}
                             style={{ width: 300 }}
                         />
                     </div>

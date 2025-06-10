@@ -71,8 +71,11 @@ const InfoOrder = () => {
             if (res.code === 200) {
                 await ActionUserService.UserAction(data);
                 await ProductService.updateStock(itemOrder);
-                dispatch(deleteAllCart());
-                dispatch(deleteAllOrder())
+                if(userId) {
+                    dispatch(deleteAllCart());
+                } else {
+                    dispatch(deleteAllOrder());
+                }
                 window.location.href = res.vnpUrl
             }
         } catch (error) {
@@ -101,9 +104,12 @@ const InfoOrder = () => {
             if (res.code === 200) {
                 await ActionUserService.UserAction(data);
                 await ProductService.updateStock(itemOrder);
-                dispatch(deleteAllCart());
-                dispatch(deleteAllOrder());
-                navigate(`/success-order/${userId}`);
+                if(userId) {
+                    dispatch(deleteAllCart());
+                } else {
+                    dispatch(deleteAllOrder());
+                }
+                window.location.href = "/success-order"
             }
         } catch (error) {
             console.error("Order submission failed:", error);
@@ -123,7 +129,7 @@ const InfoOrder = () => {
             } else {
                 dispatch(deleteAllOrder());
             }
-            navigate(`/success-order/${userId}`);
+            window.location.href = "/success-order"
         } catch (error) {
             console.error("Navigation failed:", error);
         } finally {

@@ -24,7 +24,6 @@ const UserProfile = () => {
     const [province, setProvince] = useState();
     const [district, setDistrict] = useState();
     const user = useSelector((state) => state.user);
-    const navigate = useNavigate();
     const decode = jwtDecode(user.token);
 
     const [formData, setFormData] = useState({
@@ -224,7 +223,17 @@ const UserProfile = () => {
                                     label: address.name,
                                 }))}
                             />
-                            <Input.TextArea rows={3} />
+                            <Input.TextArea
+                                rows={3}
+                                value={formData.address}
+                                style={{marginTop:20}}
+                                onChange={(e) =>
+                                    setFormData((prev) => ({
+                                        ...prev,
+                                        address: e.target.value,
+                                    }))
+                                }
+                            />
                         </Form.Item>
                         <Form.Item>
                             <Space>

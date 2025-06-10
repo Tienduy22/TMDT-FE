@@ -11,6 +11,13 @@ export const categoryCreate = async (data) => {
     return res.data;
 };
 
+export const categorySearch = async (keyword) => {
+    const res = await axios.get(
+        `${API}/admin/product-category/search?keyword=${keyword}`
+    );
+    return res.data;
+};
+
 export const categoryUpdate = async (id, data) => {
     console.log(data)
     const res = await axios.patch(

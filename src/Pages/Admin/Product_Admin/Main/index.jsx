@@ -15,12 +15,14 @@ import { TakePermissions } from "../../../../Componets/TakePermissions";
 
 function ProductAdmin() {
     const [products, setProducts] = useState([]);
-    const [search, setSearch] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [filters, setFilters] = useState({});
     const navigate = useNavigate();
     const permissions = TakePermissions();
 
+    const getProductSearch = async (val) => {
+        const res = await ProductService.productSearch(val);
+        setProducts(res.products);
+    };
 
     useEffect(() => {
         const productGet = async () => {
@@ -31,7 +33,7 @@ function ProductAdmin() {
     }, [currentPage]);
 
     const handleChangePagination = (e) => {
-        console.log(e)
+        console.log(e);
         setCurrentPage(e);
     };
 
@@ -45,6 +47,11 @@ function ProductAdmin() {
         } else {
             message.error("Xóa sản phẩm thất bại!");
         }
+    };
+
+    const onSearchChange = async (e) => {
+        const val = e.target.value;
+        getProductSearch(val);
     };
 
     return (
@@ -71,8 +78,7 @@ function ProductAdmin() {
                         <Input
                             placeholder="Tìm kiếm sản phẩm..."
                             prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={onSearchChange}
                             style={{ width: 300 }}
                         />
                     </div>
@@ -192,7 +198,7 @@ function ProductAdmin() {
                             ))
                         )}
                     </div>
-                    <div className="pagination" style={{marginTop:20}}>
+                    <div className="pagination" style={{ marginTop: 20 }}>
                         <PaginationComponents
                             onChange={handleChangePagination}
                         />

@@ -50,15 +50,6 @@ function RoleAdmin() {
                             Thêm quyền
                         </Button>
                     </div>
-                    <div className="role-admin__search">
-                        <Input
-                            placeholder="Tìm kiếm quyền..."
-                            prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            style={{ width: 300 }}
-                        />
-                    </div>
                     <div className="role-grid">
                         {/* Header */}
                         <Row className="role-grid-header" gutter={0}>

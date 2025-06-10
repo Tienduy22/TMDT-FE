@@ -69,7 +69,7 @@ const OrderUser = () => {
             <Card title="Đơn hàng của tôi" className="orders-card">
                 <div
                     className="orders-header"
-                    style={{ fontWeight: "bold", padding: "8px 0" }}
+                    style={{ fontWeight: "bold", padding: "8px 0", textAlign:"center" }}
                 >
                     <Row gutter={16}>
                         <Col span={6}>Ngày đặt</Col>
@@ -87,7 +87,7 @@ const OrderUser = () => {
                             borderBottom: "1px solid #f0f0f0",
                         }}
                     >
-                        <Row gutter={16} align="middle">
+                        <Row gutter={16} align="middle" style={{ textAlign:"center" }}>
                             <Col span={6}>{new Date(order.createdAt).toLocaleDateString()}</Col>
                             <Col span={6}>
                                 <span className="order-amount">

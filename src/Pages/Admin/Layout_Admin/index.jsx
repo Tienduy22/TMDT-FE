@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Layout, Menu} from "antd";
+import React, { useEffect, useState } from "react";
+import { Layout, Menu, Button} from "antd";
 import {
     DashboardOutlined,
     ShoppingOutlined,
@@ -12,17 +12,28 @@ import {
 } from "@ant-design/icons";
 import { Outlet, useNavigate } from "react-router-dom";
 import "./AdminLayout.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { remoteAccount } from "../../../Redux/reducers/accountReducer";
+import Cookies from 'js-cookie';
 
 const { Sider, Content } = Layout;
 
 function Admin() {
     const navigate = useNavigate();
+    const account = useSelector((state) => state.account);
+    const dispatch = useDispatch()
 
+    const handleLogout = () => {
+        dispatch(remoteAccount())
+        Cookies.remove("token")
+        navigate("/admin/login")
+    }
 
     return (
         <Layout className="admin-layout">
             <Sider trigger={null} width={250}>
-                <div className="logo">ADMIN</div>
+                <div className="logo">{account.fullName}</div>
+                <Button onClick={handleLogout} style={{width:"100%"}}>Đăng xuất</Button>
                 <Menu
                     theme="dark"
                     mode="inline"

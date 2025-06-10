@@ -58,15 +58,6 @@ function AccountAdmin() {
                             Thêm sản phẩm
                         </Button>
                     </div>
-                    <div className="account-admin__search">
-                        <Input
-                            placeholder="Tìm kiếm tài khoản..."
-                            prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            style={{ width: 300 }}
-                        />
-                    </div>
                     <div className="account-grid">
                         {/* Header */}
                         <Row className="account-grid-header" gutter={0}>

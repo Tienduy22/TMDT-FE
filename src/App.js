@@ -51,6 +51,7 @@ import OrderUser from "./Pages/Profile/OrderUser";
 import UserProfile from "./Pages/Profile/User";
 import ChangePassword from "./Pages/Profile/ChangePassword";
 import ProtectedRoute from "./Componets/ProtectedRoute";
+import ProductTest from "./Pages/ProductTest";
 
 function App() {
     const dispatch = useDispatch();
@@ -121,6 +122,7 @@ function App() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Home />} />
                     <Route path="products" element={<Product />} />
+                    <Route path="products/test" element={<ProductTest />} />
                     <Route
                         path="products/detail/:id"
                         element={<ProductDetail />}
@@ -148,7 +150,7 @@ function App() {
                     </Route>
                     <Route path="cart" element={<Cart />} />
                     <Route path="info_order" element={<InfoOrder />} />
-                    <Route path="success-order/:user_id" element={<SuccessOrder />} />
+                    <Route path="success-order" element={<SuccessOrder />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

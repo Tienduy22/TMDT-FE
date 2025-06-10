@@ -14,9 +14,18 @@ import { TakePermissions } from "../../../../Componets/TakePermissions";
 
 function UserAdmin() {
     const [users, setUsers] = useState([]);
-    const [search, setSearch] = useState("");
     const navigate = useNavigate();
     const permissions = TakePermissions();
+
+    const getUserSearch = async (val) => {
+        const res = await UserService.UserSearch(val);
+        setUsers(res.users);
+    };
+
+    const onSearchChange = async (e) => {
+        const val = e.target.value;
+        getUserSearch(val);
+    };
 
     useEffect(() => {
         const UsersGet = async () => {
@@ -47,8 +56,7 @@ function UserAdmin() {
                         <Input
                             placeholder="Tìm kiếm khách hàng..."
                             prefix={<SearchOutlined />}
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={onSearchChange}
                             style={{ width: 300 }}
                         />
                     </div>

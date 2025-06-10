@@ -19,13 +19,20 @@ export const loginUser = async (data) => {
 
 export const RegisterUser = async (data) => {
     const res = await axios.post(
-        `${API}client/user/register`,
+        `${API}/client/user/register`,
         data, 
         {
             withCredentials: true
         }
     );
     return res.data; 
+};
+
+export const UserSearch = async (keyword) => {
+    const res = await axios.get(
+        `${API}/client/user/search?keyword=${keyword}`
+    );
+    return res.data;
 };
 
 export const ProfileUser = async (id, token) => {

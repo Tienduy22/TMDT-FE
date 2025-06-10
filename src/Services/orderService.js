@@ -16,6 +16,13 @@ export const OrderOfUser = async (user_id) => {
     return res.data;
 };
 
+export const OrderSearch = async (keyword) => {
+    const res = await axios.get(
+        `${API}/client/order/search?keyword=${keyword}`
+    );
+    return res.data;
+}
+
 export const NewOrderGet = async () => {
     const res = await axios.get(
         `${API}/client/order/new`
